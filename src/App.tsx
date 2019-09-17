@@ -7,7 +7,7 @@ const App: React.FC = () => {
     <div className="App">
       <header className="App-header">
       </header>
-      <LinesCanvas></LinesCanvas>
+      <LinesCanvas width={640} height={480}></LinesCanvas>
     </div>
   );
 }
