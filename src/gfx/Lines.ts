@@ -56,13 +56,18 @@ class Lines {
     this.max[3] = 1.0;
   };
 
+  /**
+   * commits the image data to the actual canvas
+   * we're working with an inverted image, since the pixeldata array is initialized
+   * with 0. 
+   */
   commitImage = () => {
     let counter = 0;
 
     for (var t = 0; t < this.pixeldata.length; t++) {
       let newc = Math.floor(
         //255*(1.0 - (this.pixeldata[t]  / this.max[t % 4]))
-        (1.0 - this.pixeldata[t])*255
+        (1-this.pixeldata[t])*255
       );
       this.roundedpixeldata[t] = newc;
     }
@@ -74,13 +79,21 @@ class Lines {
     return Math.floor(Math.random() * Math.floor(max));
   };
 
+  /**
+   * spreads random specks of color along the direction dir, up to a distance of 
+   * length, starting on center
+   * @param {THREE.Vector3}  center origin of spread (only x and y are being used)
+   * @param {THREE.Vector3} dir direction of spread (only x and y are being used)
+   * @param {number} length length of line where specks can possible fall
+   * 
+   */
   spreadGrainsLine = (
-    center: THREE.Vector2,
-    dir: THREE.Vector2,
-    length: number
+    center: THREE.Vector3,
+    dir: THREE.Vector3,
+    length: number,
   ) => {
-    var grains = this.getRandomInt(30) + 5;
-    let newc = 0.1 / grains;
+    var grains = this.getRandomInt(20) + 5;
+    let newc = (0.04 / grains);
 
     for (var i = 0; i < grains; i++) {
       let tp = center.clone();
@@ -91,30 +104,37 @@ class Lines {
     }
   };
 
+  /**
+   * redraws the canvas with current settings
+   */
   public redraw = () => {
       
 
     this.drawCurveMurder();
-    console.log({"max":this.max})
     this.commitImage();
   };
 
+  /**
+   * draws a set of curves with each subsequent one having its anchor 
+   * points moved around randomly a bit
+   * 
+   */
   drawCurveMurder = () => {
-    let fwl = new FuzzyWobbleLine(this.width,this.height,this.steps)
+    let fwl = new FuzzyWobbleLine(this.width,this.steps)
 
-    for (var i = 0; i < 50; i++) {
-      this.drawSpreadCurve(fwl);
+    for (var i = 0; i < 70; i++) {
+      this.drawSpreadCurve(fwl,i);
       fwl.next()
     }
   };
 
-  drawSpreadCurve = (fwl: FuzzyWobbleLine) => {
-    let curve = new THREE.SplineCurve(fwl.getPoints());
-    let fuzzy = new THREE.SplineCurve(fwl.getFuzzyness())
+  drawSpreadCurve = (fwl: FuzzyWobbleLine,it:number) => {
+    let curve = new THREE.CatmullRomCurve3(fwl.getAnchors())
 
+    //new THREE.SplineCurve(fwl.getPoints());
+    
     let rendered_points = curve.getPoints(this.width * 5);
-    let fuzzy_width=fuzzy.getPoints(this.width*5);
-
+    
     for (var i = 1; i < rendered_points.length; i++) {
       //get normalized direction of line at this point
       var dir = rendered_points[i]
@@ -122,8 +142,8 @@ class Lines {
         .sub(rendered_points[i - 1])
         .normalize();
       //get right angle
-      dir.set(-dir.y, dir.x);
-      this.spreadGrainsLine(rendered_points[i], dir, fuzzy_width[i].y);
+      dir.set(-dir.y, dir.x,dir.z);
+      this.spreadGrainsLine(rendered_points[i], dir, rendered_points[i].z);
     }
   };
 }

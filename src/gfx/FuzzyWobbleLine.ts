@@ -1,58 +1,68 @@
 import * as THREE from "three";
 
 class FuzzyWobbleLine {
-  private points: Array<THREE.Vector2>;
-  private fuzzyness: Array<THREE.Vector2>;
+  private anchors: Array<THREE.Vector3>;
   private width: number;
-  private height: number;
-  private steps:number;
+  private steps: number;
 
-  constructor(width: number, height: number,anchors:number) {
+  constructor(width: number, anchors: number) {
     this.width = width;
-    this.height = height;
-    this.steps=anchors;
-    this.points = this.basepoints();
-    this.fuzzyness = this.basepoints();
-  }
-  
-  getPoints = () => {
-    return this.points
+    this.steps = anchors;
+    this.anchors = this.basepoints();
   }
 
-  getFuzzyness = () => {
-    return this.fuzzyness
-  }
+  /**
+   * returns the set of anchorpoints for this curve
+   */
+  getAnchors = () => {
+    return this.anchors;
+  };
 
-  next= ()=>{
-    this.points.forEach(p => {
+  next = () => {
+    this.anchors.forEach(p => {
+      p.y += Math.round(
+        (Math.random() - 0.5) *
+          25 *
+          Math.sin((p.x + this.width / 2) * (Math.PI / this.width)) ** 2
+      );
+      p.z += Math.round(
+        (Math.random() - 0.5) *
+          10 *
+          Math.sin((p.x + this.width / 2) * (Math.PI / this.width)) ** 2
+      );
       p.x += Math.round(
         (Math.random() - 0.5) *
           5 *
-          Math.cos(p.x * (Math.PI / this.width)) ** 2
-      );
-      p.y += Math.round(
-        (Math.random() - 0.5) *
-          35 *
-          Math.cos(p.x * (Math.PI / this.width)) ** 2
+          Math.sin((p.x + this.width / 2) * (Math.PI / this.width)) ** 2
       );
     });
-    this.fuzzyness.forEach(p => {
-      p.y += Math.round(
-        (Math.random() - 0.5) *
-          15 *
-          Math.cos(p.x * (Math.PI / this.width)) ** 2
-      );
-    });
-  }
+  };
 
+  /**
+   * creates a initial set of anchor points spanning across the width of the canvas.
+   * slight wiggle in both y location (tapering off to either end) and the degree
+   * of color spread in each point (z) 
+   *
+   * @param {number} amplitude amplitude of maximum spread of color in a singular point
+   */
   basepoints = (amplitude: number = 30) => {
-    let points = Array<THREE.Vector2>();
-    for (let t = 0.0; t < this.steps; t++) {
-      let x = (this.width / this.steps) * t - this.width / 2;
+    
+    let points = Array<THREE.Vector3>();
+    let t = -this.width / 2;
 
-      let f = Math.cos(x * (Math.PI / this.width)) ** 2;
-      let y = Math.sin(x / 40) * amplitude * f;
-      points.push(new THREE.Vector2(x, y));
+    let stepsize = this.width / this.steps;
+    for (let x = t; x < this.width / 2; x += stepsize) {
+      let y =
+        (Math.random() - 0.5) *
+        15 *
+        //tapering off to either side
+        Math.sin((x + this.width / 2) * (Math.PI / this.width));
+      let z =        
+        (Math.random() - 0.5) *
+        amplitude *
+        //tapering off to either side
+        Math.sin((x + this.width / 2) * (Math.PI / this.width));
+      points.push(new THREE.Vector3(x, y, z));
     }
     return points;
   };
