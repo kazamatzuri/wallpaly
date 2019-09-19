@@ -1,5 +1,7 @@
 import * as THREE from "three";
 import { FuzzyWobbleLine } from "./FuzzyWobbleLine";
+import seedrandom from 'seedrandom';
+
 /**
  * represents our line art class
  */
@@ -12,8 +14,10 @@ class Lines {
   pixeldata: Float64Array;
   roundedpixeldata: Uint8ClampedArray;
   img: ImageData;
+ 
 
-  constructor(canvas: HTMLCanvasElement) {
+  constructor(canvas: HTMLCanvasElement,seed:number) {
+    seedrandom(seed.toString(),{global:true})
     this.max = [0, 0, 0, 0];
     this.steps = 40;
     this.width = canvas.width;
@@ -24,6 +28,9 @@ class Lines {
     this.pixeldata = new Float64Array(this.roundedpixeldata.length);
   }
 
+  rng = () => {
+
+  }
   /**
    * transformation of coordinates so 0,0 is in the middle of the canvas
    */
@@ -78,8 +85,6 @@ class Lines {
    * with 0.
    */
   commitImage = () => {
-    let counter = 0;
-
     for (var t = 0; t < this.pixeldata.length; t++) {
       let newc = Math.floor(
         //255*(1.0 - (this.pixeldata[t]  / this.max[t % 4]))
@@ -138,7 +143,7 @@ class Lines {
   drawCurveMurder = () => {
     let fwl = new FuzzyWobbleLine(this.width, this.steps);
 
-    for (var i = 0; i < 70; i++) {
+    for (var i = 0; i < 60; i++) {
       this.drawSpreadCurve(fwl, i);
       fwl.next();
     }
