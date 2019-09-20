@@ -5,7 +5,8 @@ import Grid from "@material-ui/core/Grid";
 const App: React.FC = () => {
   return (
     <div className="App">
-      <Grid container spacing={0}>
+      <LinesCanvas width={window.innerWidth} height={window.innerHeight}></LinesCanvas>
+      {/* <Grid container spacing={0}>
         <Grid container spacing={0}>
           <Grid item xs={4}>
             <LinesCanvas width={window.innerWidth/3} height={window.innerHeight/3}></LinesCanvas>
@@ -41,7 +42,7 @@ const App: React.FC = () => {
           </Grid>
         </Grid>
 
-      </Grid>
+      </Grid> */}
     </div>
   );
 };

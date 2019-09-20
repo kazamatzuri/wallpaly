@@ -10,14 +10,16 @@ class Lines {
   height: number;
   steps: number;
   max: Array<number>;
+  canvas:HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   pixeldata: Float64Array;
   roundedpixeldata: Uint8ClampedArray;
   img: ImageData;
- 
 
   constructor(canvas: HTMLCanvasElement,seed:number) {
+    this.canvas=canvas
     seedrandom(seed.toString(),{global:true})
+    
     this.max = [0, 0, 0, 0];
     this.steps = 40;
     this.width = canvas.width;
@@ -26,6 +28,8 @@ class Lines {
     this.img = this.ctx.getImageData(0, 0, this.width, this.height);
     this.roundedpixeldata = this.img.data;
     this.pixeldata = new Float64Array(this.roundedpixeldata.length);
+  
+
   }
 
   rng = () => {
@@ -93,6 +97,7 @@ class Lines {
       this.roundedpixeldata[t] = newc;
     }
     this.ctx.putImageData(this.img, 0, 0);
+
   };
 
   /**
