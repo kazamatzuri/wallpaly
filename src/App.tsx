@@ -5,7 +5,7 @@ import { LinesCanvas } from "./components/LinesCanvas";
 const App: React.FC = () => {
   return (
     <div className="App">
-      <LinesCanvas width={window.innerWidth} height={window.innerHeight}></LinesCanvas>
+      <LinesCanvas width={window.innerWidth} height={window.innerHeight} />
       {/* <Grid container spacing={0}>
         <Grid container spacing={0}>
           <Grid item xs={4}>

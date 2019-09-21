@@ -2,12 +2,9 @@
   text-align: center;
 }
 
-
-
 .App-link {
   color: #61dafb;
 }
-
 
 .topright {
   position: absolute;
@@ -21,18 +18,21 @@
   margin: 15px;
 }
 
-.topright:hover .settingsmenu{display:block;}
+.topright:hover .settingsmenu {
+  display: block;
+}
 
-.settingsmenu:hover .settingsmenu{display:block;}
+.settingsmenu:hover .settingsmenu {
+  display: block;
+}
 
 .settingsmenu {
   position: absolute;
-  display:none;
-  right:0px;
-  top:5px;
+  display: none;
+  right: 0px;
+  top: 5px;
   min-width: 250px;
   z-index: 99;
-  background-color:rgba(128,128,128,0.3);
+  background-color: rgba(128, 128, 128, 0.3);
   padding: 1em;
-
 }
