@@ -11,11 +11,10 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 import Checkbox from "@material-ui/core/Checkbox";
 
-
 ValueLabelComponent.propTypes = {
   children: PropTypes.element.isRequired,
   open: PropTypes.bool.isRequired,
-  value: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired
 };
 
 interface Props {
@@ -37,7 +36,7 @@ function ValueLabelComponent(props: Props) {
   return (
     <Tooltip
       PopperProps={{
-        popperRef,
+        popperRef
       }}
       open={open}
       enterTouchDelay={0}
@@ -65,8 +64,8 @@ const initialState = {
     r: "255",
     g: "255",
     b: "255",
-    a: "1",
-  },
+    a: "1"
+  }
 };
 export type LinesState = Readonly<typeof initialState>;
 
@@ -77,7 +76,7 @@ export class LinesCanvas extends Component<object, LinesState> {
   static propTypes = {
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
-    seed: PropTypes.number,
+    seed: PropTypes.number
   };
 
   constructor(props: any) {
@@ -94,14 +93,13 @@ export class LinesCanvas extends Component<object, LinesState> {
       ...initialState,
       width: props.width,
       height: props.height,
-      seed: seed,
+      seed: seed
     };
   }
 
   onLinesChange = (event: object, value: any) => {
     this.setState({ lineNumber: value });
   };
-
 
   componentDidMount = () => {
     if (this.canvas.current) {
@@ -119,7 +117,6 @@ export class LinesCanvas extends Component<object, LinesState> {
   };
 
   render = () => {
- 
     return (
       <div>
         <canvas id="test" ref={this.canvas}></canvas>
@@ -131,7 +128,7 @@ export class LinesCanvas extends Component<object, LinesState> {
               <Slider
                 ValueLabelComponent={ValueLabelComponent}
                 aria-label="custom thumb label"
-                defaultValue={initialState.lineNumber}
+                defaultValue={this.state.lineNumber}
                 min={20}
                 max={300}
                 onChangeCommitted={(event: object, value: any) => {
@@ -142,7 +139,7 @@ export class LinesCanvas extends Component<object, LinesState> {
               <Slider
                 ValueLabelComponent={ValueLabelComponent}
                 aria-label="custom thumb label"
-                defaultValue={initialState.anchorpoints}
+                defaultValue={this.state.anchorpoints}
                 min={5}
                 max={300}
                 onChangeCommitted={(event: object, value: any) => {
@@ -153,7 +150,7 @@ export class LinesCanvas extends Component<object, LinesState> {
               <Slider
                 ValueLabelComponent={ValueLabelComponent}
                 aria-label="custom thumb label"
-                defaultValue={initialState.initialAmplitude}
+                defaultValue={this.state.initialAmplitude}
                 min={20}
                 max={300}
                 onChangeCommitted={(event: object, value: any) => {
@@ -164,7 +161,7 @@ export class LinesCanvas extends Component<object, LinesState> {
               <Slider
                 ValueLabelComponent={ValueLabelComponent}
                 aria-label="custom thumb label"
-                defaultValue={initialState.jitterX}
+                defaultValue={this.state.jitterX}
                 min={0}
                 max={200}
                 onChangeCommitted={(event: object, value: any) => {
@@ -175,7 +172,7 @@ export class LinesCanvas extends Component<object, LinesState> {
               <Slider
                 ValueLabelComponent={ValueLabelComponent}
                 aria-label="custom thumb label"
-                defaultValue={initialState.jitterY}
+                defaultValue={this.state.jitterY}
                 min={0}
                 max={200}
                 onChangeCommitted={(event: object, value: any) => {
@@ -186,7 +183,7 @@ export class LinesCanvas extends Component<object, LinesState> {
               <Slider
                 ValueLabelComponent={ValueLabelComponent}
                 aria-label="custom thumb label"
-                defaultValue={initialState.colorspread}
+                defaultValue={this.state.colorspread}
                 min={20}
                 max={300}
                 onChangeCommitted={(event: object, value: any) => {
@@ -213,9 +210,7 @@ export class LinesCanvas extends Component<object, LinesState> {
                   label="Wipe before new render"
                 />
               </p>
-              <p>
-
-              </p>
+              <p></p>
             </div>
           </div>
         </div>
