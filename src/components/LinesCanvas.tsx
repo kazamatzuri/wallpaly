@@ -6,6 +6,11 @@ import Slider from "@material-ui/core/Slider";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import PopperJs from "popper.js";
+import Button from "@material-ui/core/Button";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+
+import Checkbox from "@material-ui/core/Checkbox";
+
 
 ValueLabelComponent.propTypes = {
   children: PropTypes.element.isRequired,
@@ -49,8 +54,21 @@ const initialState = {
   width: 640,
   height: 480,
   seed: 1,
+  anchorpoints: 90,
+  jitterX: 5,
+  jitterY: 25,
+  colorspread: 5,
+  initialAmplitude: 30,
+  wipeOnRender: true,
+  displayColorPicker: false,
+  color: {
+    r: "255",
+    g: "255",
+    b: "255",
+    a: "1",
+  },
 };
-type LinesState = Readonly<typeof initialState>;
+export type LinesState = Readonly<typeof initialState>;
 
 export class LinesCanvas extends Component<object, LinesState> {
   private canvas = createRef<HTMLCanvasElement>();
@@ -73,10 +91,10 @@ export class LinesCanvas extends Component<object, LinesState> {
     }
 
     this.state = {
+      ...initialState,
       width: props.width,
       height: props.height,
       seed: seed,
-      lineNumber: 60,
     };
   }
 
@@ -84,17 +102,24 @@ export class LinesCanvas extends Component<object, LinesState> {
     this.setState({ lineNumber: value });
   };
 
+
   componentDidMount = () => {
-    console.log(this.state);
     if (this.canvas.current) {
       this.canvas.current.height = this.state.height;
       this.canvas.current.width = this.state.width;
-      this.lines = new Lines(this.canvas.current, this.state.seed);
-      this.lines.redraw();
+      this.lines = new Lines(this.canvas.current, this.state);
+      this.lines.redraw(this.state);
+    }
+  };
+
+  redraw = () => {
+    if (this && this.lines) {
+      this.lines.redraw(this.state);
     }
   };
 
   render = () => {
+ 
     return (
       <div>
         <canvas id="test" ref={this.canvas}></canvas>
@@ -106,46 +131,91 @@ export class LinesCanvas extends Component<object, LinesState> {
               <Slider
                 ValueLabelComponent={ValueLabelComponent}
                 aria-label="custom thumb label"
-                defaultValue={60}
+                defaultValue={initialState.lineNumber}
                 min={20}
                 max={300}
-                onChangeCommitted={this.onLinesChange}
+                onChangeCommitted={(event: object, value: any) => {
+                  this.setState({ lineNumber: value });
+                }}
               />
               <Typography gutterBottom>Number of anchor points</Typography>
               <Slider
                 ValueLabelComponent={ValueLabelComponent}
                 aria-label="custom thumb label"
-                defaultValue={90}
+                defaultValue={initialState.anchorpoints}
                 min={5}
                 max={300}
+                onChangeCommitted={(event: object, value: any) => {
+                  this.setState({ anchorpoints: value });
+                }}
+              />
+              <Typography gutterBottom>Initialization amplitude</Typography>
+              <Slider
+                ValueLabelComponent={ValueLabelComponent}
+                aria-label="custom thumb label"
+                defaultValue={initialState.initialAmplitude}
+                min={20}
+                max={300}
+                onChangeCommitted={(event: object, value: any) => {
+                  this.setState({ initialAmplitude: value });
+                }}
               />
               <Typography gutterBottom>Anchor points jitter for x</Typography>
               <Slider
                 ValueLabelComponent={ValueLabelComponent}
                 aria-label="custom thumb label"
-                defaultValue={5}
+                defaultValue={initialState.jitterX}
                 min={0}
                 max={200}
+                onChangeCommitted={(event: object, value: any) => {
+                  this.setState({ jitterX: value });
+                }}
               />
               <Typography gutterBottom>Anchor points jitter for y</Typography>
               <Slider
                 ValueLabelComponent={ValueLabelComponent}
                 aria-label="custom thumb label"
-                defaultValue={25}
+                defaultValue={initialState.jitterY}
                 min={0}
                 max={200}
+                onChangeCommitted={(event: object, value: any) => {
+                  this.setState({ jitterY: value });
+                }}
               />
               <Typography gutterBottom>Max colorspread</Typography>
               <Slider
                 ValueLabelComponent={ValueLabelComponent}
                 aria-label="custom thumb label"
-                defaultValue={30}
+                defaultValue={initialState.colorspread}
                 min={20}
                 max={300}
+                onChangeCommitted={(event: object, value: any) => {
+                  this.setState({ colorspread: value });
+                }}
               />
 
-              <p>a lot of settings here</p>
-              <p>and a lot of other stuff</p>
+              <p>
+                <Button
+                  variant="outlined"
+                  className="button"
+                  onClick={this.redraw}
+                >
+                  Render
+                </Button>
+              </p>
+
+              <p>
+                <FormControlLabel
+                  control={<Checkbox checked={this.state.wipeOnRender} />}
+                  onChange={() => {
+                    this.setState({ wipeOnRender: !this.state.wipeOnRender });
+                  }}
+                  label="Wipe before new render"
+                />
+              </p>
+              <p>
+
+              </p>
             </div>
           </div>
         </div>

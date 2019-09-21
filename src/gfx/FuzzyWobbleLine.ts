@@ -1,13 +1,14 @@
 import * as THREE from "three";
+import { LinesState } from "../components/LinesCanvas";
 
 class FuzzyWobbleLine {
   private anchors: Array<THREE.Vector3>;
   private width: number;
-  private steps: number;
+  private state:LinesState;
 
-  constructor(width: number, anchors: number) {
+  constructor(width: number, state: LinesState) {
     this.width = width;
-    this.steps = anchors;
+    this.state = state;
     this.anchors = this.basepoints();
   }
 
@@ -18,51 +19,46 @@ class FuzzyWobbleLine {
     return this.anchors;
   };
 
+  myspread = (x: number, radius: number, width: number) => {
+    return Math.round(
+      (Math.random() - 0.5) *
+        radius *
+        Math.sin((x + width / 2) * (Math.PI / width)) ** 2
+    );
+  };
+
   next = () => {
     this.anchors.forEach(p => {
-      p.y += Math.round(
-        (Math.random() - 0.5) *
-          25 *
-          Math.sin((p.x + this.width / 2) * (Math.PI / this.width)) ** 2
-      );
-      p.z += Math.round(
-        (Math.random() - 0.5) *
-          10 *
-          Math.sin((p.x + this.width / 2) * (Math.PI / this.width)) ** 2
-      );
-      p.x += Math.round(
-        (Math.random() - 0.5) *
-          5 *
-          Math.sin((p.x + this.width / 2) * (Math.PI / this.width)) ** 2
-      );
+      p.y += this.myspread(p.x, this.state.jitterY, this.width);
+      p.z += this.myspread(p.x, this.state.colorspread, this.width);
+      p.x += this.myspread(p.x, this.state.jitterX, this.width);
     });
   };
 
   /**
    * creates a initial set of anchor points spanning across the width of the canvas.
    * slight wiggle in both y location (tapering off to either end) and the degree
-   * of color spread in each point (z) 
+   * of color spread in each point (z)
    *
    * @param {number} amplitude amplitude of maximum spread of color in a singular point
    */
-  basepoints = (amplitude: number = 30) => {
-    
+  basepoints = () => {
     let points = Array<THREE.Vector3>();
     let t = -this.width / 2;
 
-    let stepsize = this.width / this.steps;
+    let stepsize = this.width / this.state.anchorpoints;
     for (let x = t; x < this.width / 2; x += stepsize) {
       let y =
         (Math.random() - 0.5) *
-        15 *
+        this.state.initialAmplitude *
         //tapering off to either side
         Math.sin((x + this.width / 2) * (Math.PI / this.width));
-      let z =        
+      let z =
         (Math.random() - 0.5) *
-        amplitude *
+        this.state.colorspread *
         //tapering off to either side
         Math.sin((x + this.width / 2) * (Math.PI / this.width));
-      points.push(new THREE.Vector3(x, y, z));
+      points= [...points,(new THREE.Vector3(x, y, z))];
     }
     return points;
   };

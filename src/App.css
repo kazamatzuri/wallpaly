@@ -17,6 +17,10 @@
   z-index: 100;
 }
 
+.button {
+  margin: 15px;
+}
+
 .topright:hover .settingsmenu{display:block;}
 
 .settingsmenu:hover .settingsmenu{display:block;}

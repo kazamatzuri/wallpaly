@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { FuzzyWobbleLine } from "./FuzzyWobbleLine";
 import seedrandom from 'seedrandom';
+import {LinesState} from '../components/LinesCanvas';
 
 /**
  * represents our line art class
@@ -8,20 +9,18 @@ import seedrandom from 'seedrandom';
 class Lines {
   width: number;
   height: number;
-  steps: number;
-  max: Array<number>;
   canvas:HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   pixeldata: Float64Array;
   roundedpixeldata: Uint8ClampedArray;
   img: ImageData;
+  state:LinesState;
 
-  constructor(canvas: HTMLCanvasElement,seed:number) {
+  constructor(canvas: HTMLCanvasElement,state:LinesState) {
     this.canvas=canvas
-    seedrandom(seed.toString(),{global:true})
+    this.state=state
+    seedrandom(state.seed.toString(),{global:true})
     
-    this.max = [0, 0, 0, 0];
-    this.steps = 40;
     this.width = canvas.width;
     this.height = canvas.height;
     this.ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -74,13 +73,8 @@ class Lines {
     let offset = (y * this.width + x) * 4;
     for (var i = 0; i < 3; i++) {
       this.pixeldata[offset + i] = color[i] + this.pixeldata[offset + i];
-
-      if (this.pixeldata[offset + i] > this.max[i]) {
-        this.max[i] = this.pixeldata[offset + i];
-      }
     }
     this.pixeldata[offset + 3] = 0.0;
-    this.max[3] = 1.0;
   };
 
   /**
@@ -135,7 +129,12 @@ class Lines {
   /**
    * redraws the canvas with current settings
    */
-  public redraw = () => {
+  public redraw = (state:LinesState) => {
+    this.state={...this.state,...state}
+    if(this.state.wipeOnRender) {
+      this.ctx.clearRect(0,0,this.width,this.height)
+      this.pixeldata = new Float64Array(this.roundedpixeldata.length);
+    }
     this.drawCurveMurder();
     this.commitImage();
   };
@@ -146,7 +145,7 @@ class Lines {
    *
    */
   drawCurveMurder = () => {
-    let fwl = new FuzzyWobbleLine(this.width, this.steps);
+    let fwl = new FuzzyWobbleLine(this.width, this.state);
 
     for (var i = 0; i < 60; i++) {
       this.drawSpreadCurve(fwl, i);
