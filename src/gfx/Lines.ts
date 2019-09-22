@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { FuzzyWobbleLine } from "./FuzzyWobbleLine";
-import seedrandom from 'seedrandom';
-import {LinesState} from '../components/LinesCanvas';
+import seedrandom from "seedrandom";
+import { LinesState } from "../components/LinesCanvas";
 
 /**
  * represents our line art class
@@ -9,31 +9,27 @@ import {LinesState} from '../components/LinesCanvas';
 class Lines {
   width: number;
   height: number;
-  canvas:HTMLCanvasElement;
+  canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   pixeldata: Float64Array;
   roundedpixeldata: Uint8ClampedArray;
   img: ImageData;
-  state:LinesState;
+  state: LinesState;
 
-  constructor(canvas: HTMLCanvasElement,state:LinesState) {
-    this.canvas=canvas
-    this.state=state
-    seedrandom(state.seed.toString(),{global:true})
-    
+  constructor(canvas: HTMLCanvasElement, state: LinesState) {
+    this.canvas = canvas;
+    this.state = state;
+    seedrandom(state.seed.toString(), { global: true });
+
     this.width = canvas.width;
     this.height = canvas.height;
     this.ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
     this.img = this.ctx.getImageData(0, 0, this.width, this.height);
     this.roundedpixeldata = this.img.data;
     this.pixeldata = new Float64Array(this.roundedpixeldata.length);
-  
-
   }
 
-  rng = () => {
-
-  }
+  rng = () => {};
   /**
    * transformation of coordinates so 0,0 is in the middle of the canvas
    */
@@ -91,7 +87,6 @@ class Lines {
       this.roundedpixeldata[t] = newc;
     }
     this.ctx.putImageData(this.img, 0, 0);
-
   };
 
   /**
@@ -121,7 +116,12 @@ class Lines {
       let tp = center.clone();
       let t = Math.random() - 0.5;
       tp.addScaledVector(dir, t * length);
-      let basecolor = [newc, newc, newc, 0.0];
+      let basecolor = [
+        newc * (this.state.invcolor.r / 255),
+        newc * (this.state.invcolor.g / 255),
+        newc * (this.state.invcolor.b / 255),
+        0.0
+      ];
       this.addPixel(tp.x, tp.y, basecolor);
     }
   };
@@ -129,10 +129,18 @@ class Lines {
   /**
    * redraws the canvas with current settings
    */
-  public redraw = (state:LinesState) => {
-    this.state={...this.state,...state}
-    if(this.state.wipeOnRender) {
-      this.ctx.clearRect(0,0,this.width,this.height)
+  public redraw = (state: LinesState) => {
+    this.state = { ...this.state, ...state };
+    this.state = {
+      ...this.state,
+      invcolor: {
+        r: 255 - this.state.color.r,
+        g: 255 - this.state.color.g,
+        b: 255 - this.state.color.b
+      }
+    };
+    if (this.state.wipeOnRender) {
+      this.ctx.clearRect(0, 0, this.width, this.height);
       this.pixeldata = new Float64Array(this.roundedpixeldata.length);
     }
     this.drawCurveMurder();

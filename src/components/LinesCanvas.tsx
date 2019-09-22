@@ -8,8 +8,9 @@ import Typography from "@material-ui/core/Typography";
 import PopperJs from "popper.js";
 import Button from "@material-ui/core/Button";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-
 import Checkbox from "@material-ui/core/Checkbox";
+import { SketchPicker, ColorResult } from "react-color";
+import CSS from "csstype";
 
 ValueLabelComponent.propTypes = {
   children: PropTypes.element.isRequired,
@@ -60,12 +61,8 @@ const initialState = {
   initialAmplitude: 30,
   wipeOnRender: true,
   displayColorPicker: false,
-  color: {
-    r: "255",
-    g: "255",
-    b: "255",
-    a: "1"
-  }
+  color: { r: 0, g: 0, b: 0 },
+  invcolor: { r: 255, g: 255, b: 255 }
 };
 export type LinesState = Readonly<typeof initialState>;
 
@@ -115,8 +112,43 @@ export class LinesCanvas extends Component<object, LinesState> {
       this.lines.redraw(this.state);
     }
   };
+  handleClick = () => {
+    this.setState({ displayColorPicker: !this.state.displayColorPicker });
+  };
+  handleClose = () => {
+    this.setState({ displayColorPicker: false });
+  };
 
+  handleChange = (color: ColorResult) => {
+    this.setState({ color: color.rgb });
+  };
   render = () => {
+    const swatchStyle: CSS.Properties = {
+      padding: "5px",
+      background: "#fff",
+      borderRadius: "1px",
+      boxShadow: "0 0 0 1px rgba(0,0,0,.1)",
+      display: "inline-block",
+      cursor: "pointer"
+    };
+    const coverStyle: CSS.Properties = {
+      position: "fixed",
+      top: "0px",
+      right: "0px",
+      bottom: "0px",
+      left: "0px"
+    };
+    const colorStyle: CSS.Properties = {
+      width: "36px",
+      height: "14px",
+      borderRadius: "2px",
+      background: `rgba(${this.state.color.r}, ${this.state.color.g}, ${this.state.color.b},1.0)`
+    };
+    const popoverStyle: CSS.Properties = {
+      position: "absolute",
+      zIndex: 2
+    };
+
     return (
       <div>
         <canvas id="test" ref={this.canvas}></canvas>
@@ -210,7 +242,21 @@ export class LinesCanvas extends Component<object, LinesState> {
                   label="Wipe before new render"
                 />
               </p>
-              <p></p>
+
+              <div>
+                <div style={swatchStyle} onClick={this.handleClick}>
+                  <div style={colorStyle} />
+                </div>
+                {this.state.displayColorPicker ? (
+                  <div style={popoverStyle}>
+                    <div style={coverStyle} onClick={this.handleClose} />
+                    <SketchPicker
+                      color={this.state.color}
+                      onChange={this.handleChange}
+                    />
+                  </div>
+                ) : null}
+              </div>
             </div>
           </div>
         </div>
