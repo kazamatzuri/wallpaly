@@ -50,20 +50,21 @@ function ValueLabelComponent(props: Props) {
 }
 
 const initialState = {
-  lineNumber: 60,
-  width: 640,
-  height: 480,
-  seed: 1,
-  anchorpoints: 90,
-  jitterX: 5,
-  jitterY: 25,
-  colorspread: 5,
-  initialAmplitude: 30,
-  wipeOnRender: true,
-  randomColor: false,
-  displayColorPicker: false,
-  color: { r: 0, g: 0, b: 0 },
-  invcolor: { r: 255, g: 255, b: 255 }
+  version: 1, //0
+  lineNumber: 60, //1
+  width: 640, //2
+  height: 480, //3
+  seed: 1, //4
+  anchorpoints: 29, //5
+  jitterX: 5, //6
+  jitterY: 11, //7
+  colorspread: 5, //8
+  initialAmplitude: 30, //9
+  wipeOnRender: true, //10
+  randomColor: false, //11
+  displayColorPicker: false, //12
+  color: { r: 0, g: 0, b: 0 }, //13
+  invcolor: { r: 255, g: 255, b: 255 } //14
 };
 export type LinesState = Readonly<typeof initialState>;
 
@@ -93,6 +94,26 @@ export class LinesCanvas extends Component<object, LinesState> {
       height: props.height,
       seed: seed
     };
+
+    let lochash = window.location.hash;
+    if (lochash !== "") {
+      let vals = JSON.parse(decodeURI(lochash.replace("#", "")));
+      if (vals[0] === 1) {
+        this.state = {
+          ...this.state,
+          lineNumber: vals[1],
+          seed: vals[4],
+          anchorpoints: vals[5],
+          jitterX: vals[6],
+          jitterY: vals[7],
+          colorspread: vals[8],
+          initialAmplitude: vals[30],
+          wipeOnRender: vals[10],
+          randomColor: vals[11],
+          color: vals[13]
+        };
+      }
+    }
   }
 
   onLinesChange = (event: object, value: any) => {

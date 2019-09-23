@@ -143,6 +143,7 @@ class Lines {
       this.ctx.clearRect(0, 0, this.width, this.height);
       this.pixeldata = new Float64Array(this.roundedpixeldata.length);
     }
+    window.location.hash = encodeURI(JSON.stringify(Object.values(this.state)));
     this.drawCurveMurder();
     this.commitImage();
   };
