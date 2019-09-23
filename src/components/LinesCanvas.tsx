@@ -60,6 +60,7 @@ const initialState = {
   colorspread: 5,
   initialAmplitude: 30,
   wipeOnRender: true,
+  randomColor: false,
   displayColorPicker: false,
   color: { r: 0, g: 0, b: 0 },
   invcolor: { r: 255, g: 255, b: 255 }
@@ -240,6 +241,16 @@ export class LinesCanvas extends Component<object, LinesState> {
                     this.setState({ wipeOnRender: !this.state.wipeOnRender });
                   }}
                   label="Wipe before new render"
+                />
+              </p>
+
+              <p>
+                <FormControlLabel
+                  control={<Checkbox checked={this.state.randomColor} />}
+                  onChange={() => {
+                    this.setState({ randomColor: !this.state.randomColor });
+                  }}
+                  label="Random colors"
                 />
               </p>
 

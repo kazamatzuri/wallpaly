@@ -157,6 +157,24 @@ class Lines {
 
     for (var i = 0; i < 60; i++) {
       this.drawSpreadCurve(fwl, i);
+      if (this.state.randomColor) {
+        this.state = {
+          ...this.state,
+          color: {
+            r: this.getRandomInt(255),
+            g: this.getRandomInt(255),
+            b: this.getRandomInt(255)
+          }
+        };
+        this.state = {
+          ...this.state,
+          invcolor: {
+            r: 255 - this.state.color.r,
+            g: 255 - this.state.color.g,
+            b: 255 - this.state.color.b
+          }
+        };
+      }
       fwl.next();
     }
   };
