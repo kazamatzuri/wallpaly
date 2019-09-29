@@ -1,7 +1,7 @@
 import React, { createRef, Component } from "react";
 import { Lines } from "../gfx/Lines";
 import PropTypes from "prop-types";
-import { Tune } from "mdi-material-ui";
+import { Tune, Download } from "mdi-material-ui";
 import Slider from "@material-ui/core/Slider";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
@@ -120,6 +120,47 @@ export class LinesCanvas extends Component<object, LinesState> {
     this.setState({ lineNumber: value });
   };
 
+  download = (event: object) => {
+    /// create an "off-screen" anchor tag
+    var lnk = document.createElement("a"),
+      e;
+
+    var filename = "wallpaper.png";
+    /// the key here is to set the download attribute of the a tag
+    lnk.download = filename;
+
+    /// convert canvas content to data-uri for link. When download
+    /// attribute is set the content pointed to by link will be
+    /// pushed as "download" in HTML5 capable browsers
+    if (this.canvas.current != null) {
+      lnk.href = this.canvas.current.toDataURL("image/png;base64");
+
+      /// create a "fake" click-event to trigger the download
+      if (document.createEvent) {
+        e = document.createEvent("MouseEvents");
+        e.initMouseEvent(
+          "click",
+          true,
+          true,
+          window,
+          0,
+          0,
+          0,
+          0,
+          0,
+          false,
+          false,
+          false,
+          false,
+          0,
+          null
+        );
+
+        lnk.dispatchEvent(e);
+      }
+    }
+  };
+
   componentDidMount = () => {
     if (this.canvas.current) {
       this.canvas.current.height = this.state.height;
@@ -175,119 +216,125 @@ export class LinesCanvas extends Component<object, LinesState> {
       <div>
         <canvas id="test" ref={this.canvas}></canvas>
         <div className="topright">
-          <Tune />
-          <div className="settingsmenu">
-            <div>
-              <Typography gutterBottom>Number of lines</Typography>
-              <Slider
-                ValueLabelComponent={ValueLabelComponent}
-                aria-label="custom thumb label"
-                defaultValue={this.state.lineNumber}
-                min={20}
-                max={300}
-                onChangeCommitted={(event: object, value: any) => {
-                  this.setState({ lineNumber: value });
-                }}
-              />
-              <Typography gutterBottom>Number of anchor points</Typography>
-              <Slider
-                ValueLabelComponent={ValueLabelComponent}
-                aria-label="custom thumb label"
-                defaultValue={this.state.anchorpoints}
-                min={5}
-                max={300}
-                onChangeCommitted={(event: object, value: any) => {
-                  this.setState({ anchorpoints: value });
-                }}
-              />
-              <Typography gutterBottom>Initialization amplitude</Typography>
-              <Slider
-                ValueLabelComponent={ValueLabelComponent}
-                aria-label="custom thumb label"
-                defaultValue={this.state.initialAmplitude}
-                min={20}
-                max={300}
-                onChangeCommitted={(event: object, value: any) => {
-                  this.setState({ initialAmplitude: value });
-                }}
-              />
-              <Typography gutterBottom>Anchor points jitter for x</Typography>
-              <Slider
-                ValueLabelComponent={ValueLabelComponent}
-                aria-label="custom thumb label"
-                defaultValue={this.state.jitterX}
-                min={0}
-                max={200}
-                onChangeCommitted={(event: object, value: any) => {
-                  this.setState({ jitterX: value });
-                }}
-              />
-              <Typography gutterBottom>Anchor points jitter for y</Typography>
-              <Slider
-                ValueLabelComponent={ValueLabelComponent}
-                aria-label="custom thumb label"
-                defaultValue={this.state.jitterY}
-                min={0}
-                max={200}
-                onChangeCommitted={(event: object, value: any) => {
-                  this.setState({ jitterY: value });
-                }}
-              />
-              <Typography gutterBottom>Max colorspread</Typography>
-              <Slider
-                ValueLabelComponent={ValueLabelComponent}
-                aria-label="custom thumb label"
-                defaultValue={this.state.colorspread}
-                min={20}
-                max={300}
-                onChangeCommitted={(event: object, value: any) => {
-                  this.setState({ colorspread: value });
-                }}
-              />
+          <div className="download">
+            <Download onClick={this.download} />
+          </div>
+          <div className="settingsbutton">
+            <Tune />
 
-              <p>
-                <Button
-                  variant="outlined"
-                  className="button"
-                  onClick={this.redraw}
-                >
-                  Render
-                </Button>
-              </p>
-
-              <p>
-                <FormControlLabel
-                  control={<Checkbox checked={this.state.wipeOnRender} />}
-                  onChange={() => {
-                    this.setState({ wipeOnRender: !this.state.wipeOnRender });
-                  }}
-                  label="Wipe before new render"
-                />
-              </p>
-
-              <p>
-                <FormControlLabel
-                  control={<Checkbox checked={this.state.randomColor} />}
-                  onChange={() => {
-                    this.setState({ randomColor: !this.state.randomColor });
-                  }}
-                  label="Random colors"
-                />
-              </p>
-
+            <div className="settingsmenu">
               <div>
-                <div style={swatchStyle} onClick={this.handleClick}>
-                  <div style={colorStyle} />
-                </div>
-                {this.state.displayColorPicker ? (
-                  <div style={popoverStyle}>
-                    <div style={coverStyle} onClick={this.handleClose} />
-                    <SketchPicker
-                      color={this.state.color}
-                      onChange={this.handleChange}
-                    />
+                <Typography gutterBottom>Number of lines</Typography>
+                <Slider
+                  ValueLabelComponent={ValueLabelComponent}
+                  aria-label="custom thumb label"
+                  defaultValue={this.state.lineNumber}
+                  min={20}
+                  max={300}
+                  onChangeCommitted={(event: object, value: any) => {
+                    this.setState({ lineNumber: value });
+                  }}
+                />
+                <Typography gutterBottom>Number of anchor points</Typography>
+                <Slider
+                  ValueLabelComponent={ValueLabelComponent}
+                  aria-label="custom thumb label"
+                  defaultValue={this.state.anchorpoints}
+                  min={5}
+                  max={300}
+                  onChangeCommitted={(event: object, value: any) => {
+                    this.setState({ anchorpoints: value });
+                  }}
+                />
+                <Typography gutterBottom>Initialization amplitude</Typography>
+                <Slider
+                  ValueLabelComponent={ValueLabelComponent}
+                  aria-label="custom thumb label"
+                  defaultValue={this.state.initialAmplitude}
+                  min={20}
+                  max={300}
+                  onChangeCommitted={(event: object, value: any) => {
+                    this.setState({ initialAmplitude: value });
+                  }}
+                />
+                <Typography gutterBottom>Anchor points jitter for x</Typography>
+                <Slider
+                  ValueLabelComponent={ValueLabelComponent}
+                  aria-label="custom thumb label"
+                  defaultValue={this.state.jitterX}
+                  min={0}
+                  max={200}
+                  onChangeCommitted={(event: object, value: any) => {
+                    this.setState({ jitterX: value });
+                  }}
+                />
+                <Typography gutterBottom>Anchor points jitter for y</Typography>
+                <Slider
+                  ValueLabelComponent={ValueLabelComponent}
+                  aria-label="custom thumb label"
+                  defaultValue={this.state.jitterY}
+                  min={0}
+                  max={200}
+                  onChangeCommitted={(event: object, value: any) => {
+                    this.setState({ jitterY: value });
+                  }}
+                />
+                <Typography gutterBottom>Max colorspread</Typography>
+                <Slider
+                  ValueLabelComponent={ValueLabelComponent}
+                  aria-label="custom thumb label"
+                  defaultValue={this.state.colorspread}
+                  min={20}
+                  max={300}
+                  onChangeCommitted={(event: object, value: any) => {
+                    this.setState({ colorspread: value });
+                  }}
+                />
+
+                <p>
+                  <Button
+                    variant="outlined"
+                    className="button"
+                    onClick={this.redraw}
+                  >
+                    Render
+                  </Button>
+                </p>
+
+                <p>
+                  <FormControlLabel
+                    control={<Checkbox checked={this.state.wipeOnRender} />}
+                    onChange={() => {
+                      this.setState({ wipeOnRender: !this.state.wipeOnRender });
+                    }}
+                    label="Wipe before new render"
+                  />
+                </p>
+
+                <p>
+                  <FormControlLabel
+                    control={<Checkbox checked={this.state.randomColor} />}
+                    onChange={() => {
+                      this.setState({ randomColor: !this.state.randomColor });
+                    }}
+                    label="Random colors"
+                  />
+                </p>
+
+                <div>
+                  <div style={swatchStyle} onClick={this.handleClick}>
+                    <div style={colorStyle} />
                   </div>
-                ) : null}
+                  {this.state.displayColorPicker ? (
+                    <div style={popoverStyle}>
+                      <div style={coverStyle} onClick={this.handleClose} />
+                      <SketchPicker
+                        color={this.state.color}
+                        onChange={this.handleChange}
+                      />
+                    </div>
+                  ) : null}
+                </div>
               </div>
             </div>
           </div>

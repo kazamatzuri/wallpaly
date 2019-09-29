@@ -7,18 +7,21 @@
 }
 
 .topright {
+  display: flex;
   position: absolute;
   top: 8px;
   right: 16px;
   font-size: 18px;
   z-index: 100;
+  width: 100px;
+  justify-content: space-around;
 }
 
 .button {
   margin: 15px;
 }
 
-.topright:hover .settingsmenu {
+.settingsbutton:hover .settingsmenu {
   display: block;
 }
 
