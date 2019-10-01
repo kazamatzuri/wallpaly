@@ -20,7 +20,8 @@ class Lines {
     this.canvas = canvas;
     this.state = state;
     seedrandom(state.seed.toString(), { global: true });
-
+    this.canvas.width = 2560;
+    this.canvas.height = 1080;
     this.width = canvas.width;
     this.height = canvas.height;
     this.ctx = canvas.getContext("2d") as CanvasRenderingContext2D;

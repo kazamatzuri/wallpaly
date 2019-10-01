@@ -29,8 +29,6 @@ export class LinesCanvas extends Component<object, LinesState> {
   public state: LinesState = initialState;
   private lines?: Lines;
   static propTypes = {
-    width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired,
     seed: PropTypes.number
   };
 
