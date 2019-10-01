@@ -10,8 +10,9 @@ import Tooltip from "@material-ui/core/Tooltip";
 import PopperJs from "popper.js";
 import { SketchPicker, ColorResult } from "react-color";
 import CSS from "csstype";
-
+import Select from "@material-ui/core/Select";
 import { LinesState } from "./LinesCanvas";
+import MenuItem from "@material-ui/core/MenuItem";
 
 ValueLabelComponent.propTypes = {
   children: PropTypes.element.isRequired,
@@ -57,6 +58,7 @@ type SettingsState = {
   displayColorPicker: boolean;
   randomColor: boolean;
   wipe: boolean;
+  res: string;
 };
 
 export class SettingsMenu extends Component<object, SettingsState> {
@@ -76,7 +78,8 @@ export class SettingsMenu extends Component<object, SettingsState> {
       setSettings: props.setSettings,
       displayColorPicker: false,
       randomColor: props.parentState.randomColor,
-      wipe: props.parentState.wipeOnRender
+      wipe: props.parentState.wipeOnRender,
+      res: "1920,1080"
     };
   }
 
@@ -91,6 +94,15 @@ export class SettingsMenu extends Component<object, SettingsState> {
 
   handleChange = (color: ColorResult) => {
     this.state.setSettings({ color: color.rgb });
+  };
+
+  handleRes = (event: any) => {
+    let v = event.target.value;
+    this.setState({ res: event.target.value });
+    let w = parseInt(v.split(",")[0]);
+    let h = parseInt(v.split(",")[1]);
+    this.state.setSettings({ width: w, height: h });
+    this.state.pRedraw();
   };
 
   render = () => {
@@ -125,6 +137,17 @@ export class SettingsMenu extends Component<object, SettingsState> {
 
         <div className="settingsmenu">
           <div>
+            <Typography gutterBottom>Resolution</Typography>
+
+            <Select value={this.state.res} onChange={this.handleRes}>
+              <MenuItem value={"1920,1080"}>1920x1080</MenuItem>
+              <MenuItem value={"2560,1080"}>2560x1080</MenuItem>
+              <MenuItem value={"2560,1440"}>2560x1440</MenuItem>
+              <MenuItem value={"3440,1440"}>3440x1440</MenuItem>
+              <MenuItem value={"3840,2160"}>3840x2160</MenuItem>
+              <MenuItem value={"5120,2160"}>5120x2160</MenuItem>
+            </Select>
+
             <Typography gutterBottom>Number of lines</Typography>
             <Slider
               ValueLabelComponent={ValueLabelComponent}

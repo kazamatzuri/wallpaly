@@ -84,7 +84,7 @@ export class LinesCanvas extends Component<object, LinesState> {
     var lnk = document.createElement("a"),
       e;
 
-    var filename = "wallpaper.png";
+    var filename = `wallpaper-${this.state.width}x${this.state.height}.png`;
     /// the key here is to set the download attribute of the a tag
     lnk.download = filename;
 
