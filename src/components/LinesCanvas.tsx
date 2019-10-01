@@ -1,8 +1,9 @@
 import React, { createRef, Component } from "react";
 import { Lines } from "../gfx/Lines";
 import PropTypes from "prop-types";
-import { Download } from "mdi-material-ui";
+
 import { SettingsMenu } from "./SettingsMenu";
+import { DownloadComp } from "./DownloadComp";
 
 const initialState = {
   version: 1, //0
@@ -139,9 +140,7 @@ export class LinesCanvas extends Component<object, LinesState> {
       <div>
         <canvas id="test" ref={this.canvas}></canvas>
         <div className="topright">
-          <div className="download">
-            <Download onClick={this.download} />
-          </div>
+          <DownloadComp cb={this.download} />
           <SettingsMenu
             setSettings={this.setSetting}
             parentState={this.state}
