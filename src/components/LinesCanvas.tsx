@@ -3,7 +3,7 @@ import { Lines } from "../gfx/Lines";
 import PropTypes from "prop-types";
 
 import { SettingsMenu } from "./SettingsMenu";
-import { DownloadComp } from "./DownloadComp";
+import DownloadComp from "./DownloadComp";
 
 const initialState = {
   version: 1, //0
