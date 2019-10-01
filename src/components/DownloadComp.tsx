@@ -38,17 +38,20 @@ function DownloadComp(props: DownloadProps) {
   return (
     <div className="download">
       <Download
-        onMouseEnter={() => setShowMenu(showMenu => !showMenu)}
-        onClick={() => setShowMenu(showMenu => !showMenu)}
+        // onMouseEnter={() => setShowMenu(showMenu => !showMenu)}
+        // onClick={() => setShowMenu(showMenu => !showMenu)}
+        onClick={() => {
+          props.cb();
+        }}
       />
-      <div
+      {/* <div
         className="downloadMenu"
         onMouseLeave={() => setShowMenu(showMenu => !showMenu)}
         css={showMenu ? shown : hidden}
       >
         <Grid container spacing={0}>
           <Grid item xs={6}>
-            <Button>1920 x 1080</Button>
+            <Button onClick={(event: React.MouseEvent<HTMLButtonElement,MouseEvent>)=>{props.cb(event,1920,1080)}}>1920 x 1080</Button>
           </Grid>
           <Grid item xs={6}>
             <Button>2560 x 1080</Button>
@@ -70,7 +73,7 @@ function DownloadComp(props: DownloadProps) {
             <Button>5120 x 2160</Button>
           </Grid>
         </Grid>
-      </div>
+      </div> */}
     </div>
   );
 }

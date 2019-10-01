@@ -45,8 +45,8 @@ export class LinesCanvas extends Component<object, LinesState> {
 
     this.state = {
       ...initialState,
-      width: props.width,
-      height: props.height,
+      width: 1920,
+      height: 1080,
       seed: seed
     };
 
@@ -79,7 +79,7 @@ export class LinesCanvas extends Component<object, LinesState> {
     this.setState(newstate);
   };
 
-  download = (event: React.MouseEvent<HTMLInputElement>) => {
+  download = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     /// create an "off-screen" anchor tag
     var lnk = document.createElement("a"),
       e;

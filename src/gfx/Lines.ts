@@ -20,8 +20,8 @@ class Lines {
     this.canvas = canvas;
     this.state = state;
     seedrandom(state.seed.toString(), { global: true });
-    this.canvas.width = 2560;
-    this.canvas.height = 1080;
+    this.canvas.width = state.width;
+    this.canvas.height = state.height;
     this.width = canvas.width;
     this.height = canvas.height;
     this.ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -141,7 +141,7 @@ class Lines {
       }
     };
     if (this.state.wipeOnRender) {
-      this.ctx.clearRect(0, 0, this.width, this.height);
+      this.ctx.clearRect(0, 0, this.state.width, this.state.height);
       this.pixeldata = new Float64Array(this.roundedpixeldata.length);
     }
     window.location.hash = encodeURI(JSON.stringify(Object.values(this.state)));
