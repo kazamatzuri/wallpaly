@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { Download } from "mdi-material-ui";
 import { Button } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
+
 interface DownloadProps {
   cb: any;
 }
@@ -14,8 +15,8 @@ const downloadMenucss = css({
   width: "200px",
   position: "absolute",
   right: "5px",
-  top: "15px",
-  backgroundColor: "rgba(128, 128, 128, 0.3)"
+  top: "0px",
+  backgroundColor: "rgba(255, 255, 255, 0.9)"
 });
 
 const hidden = css(

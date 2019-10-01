@@ -79,7 +79,7 @@ export class LinesCanvas extends Component<object, LinesState> {
     this.setState(newstate);
   };
 
-  download = (event: object) => {
+  download = (event: React.MouseEvent<HTMLInputElement>) => {
     /// create an "off-screen" anchor tag
     var lnk = document.createElement("a"),
       e;
