@@ -2,6 +2,7 @@
   "name": "wallpaly",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://kazamatzuri.github.io/wallpaly/",
   "dependencies": {
     "@emotion/core": "^10.0.17",
     "@emotion/styled": "^10.0.17",
