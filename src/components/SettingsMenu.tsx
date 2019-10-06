@@ -1,4 +1,4 @@
-import React, { createRef, Component } from "react";
+import React, { Component } from "react";
 import Button from "@material-ui/core/Button";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -153,6 +153,7 @@ export class SettingsMenu extends Component<object, SettingsState> {
               ValueLabelComponent={ValueLabelComponent}
               aria-label="custom thumb label"
               defaultValue={this.state.parentState.lineNumber}
+              value={this.state.parentState.lineNumber}
               min={20}
               max={300}
               onChangeCommitted={(event: object, value: any) => {
@@ -164,6 +165,7 @@ export class SettingsMenu extends Component<object, SettingsState> {
               ValueLabelComponent={ValueLabelComponent}
               aria-label="custom thumb label"
               defaultValue={this.state.parentState.anchorpoints}
+              value={this.state.parentState.anchorpoints}
               min={5}
               max={300}
               onChangeCommitted={(event: object, value: any) => {
@@ -175,6 +177,7 @@ export class SettingsMenu extends Component<object, SettingsState> {
               ValueLabelComponent={ValueLabelComponent}
               aria-label="custom thumb label"
               defaultValue={this.state.parentState.initialAmplitude}
+              value={this.state.parentState.initialAmplitude}
               min={20}
               max={300}
               onChangeCommitted={(event: object, value: any) => {

@@ -138,7 +138,7 @@ export class LinesCanvas extends Component<object, LinesState> {
   render = () => {
     return (
       <div>
-        <canvas id="test" ref={this.canvas}></canvas>
+        <canvas id="linescanvas" ref={this.canvas}></canvas>
         <div className="topright">
           <DownloadComp cb={this.download} />
           <SettingsMenu

@@ -1,40 +1,40 @@
 /** @jsx jsx */
-import { jsx, css } from "@emotion/core";
+import { jsx } from "@emotion/core";
 
-import React, { useState } from "react";
+//import React, { useState } from "react";
 
 import { Download } from "mdi-material-ui";
-import { Button } from "@material-ui/core";
-import Grid from "@material-ui/core/Grid";
+//import { Button } from "@material-ui/core";
+//import Grid from "@material-ui/core/Grid";
 
 interface DownloadProps {
   cb: any;
 }
 
-const downloadMenucss = css({
-  width: "200px",
-  position: "absolute",
-  right: "5px",
-  top: "0px",
-  backgroundColor: "rgba(255, 255, 255, 0.9)"
-});
+// const downloadMenucss = css({
+//   width: "200px",
+//   position: "absolute",
+//   right: "5px",
+//   top: "0px",
+//   backgroundColor: "rgba(255, 255, 255, 0.9)"
+// });
 
-const hidden = css(
-  {
-    display: "none"
-  },
-  downloadMenucss
-);
+// const hidden = css(
+//   {
+//     display: "none"
+//   },
+//   downloadMenucss
+// );
 
-const shown = css(
-  {
-    display: "block"
-  },
-  downloadMenucss
-);
+// const shown = css(
+//   {
+//     display: "block"
+//   },
+//   downloadMenucss
+// );
 
 function DownloadComp(props: DownloadProps) {
-  const [showMenu, setShowMenu] = React.useState(false);
+  //   const [showMenu, setShowMenu] = React.useState(false);
   return (
     <div className="download">
       <Download
