@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 
 import { SettingsMenu } from "./SettingsMenu";
 import DownloadComp from "./DownloadComp";
+import RandomComp from "./RandomComp";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 
@@ -92,6 +93,11 @@ export class LinesCanvas extends Component<object, LinesState> {
     this.setState(newstate);
   };
 
+  setSettingAndRender = (newstate: object) => {
+    this.setSetting(newstate);
+    this.redraw();
+  };
+
   download = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     /// create an "off-screen" anchor tag
     var lnk = document.createElement("a"),
@@ -153,6 +159,7 @@ export class LinesCanvas extends Component<object, LinesState> {
       <div>
         <canvas id="linescanvas" ref={this.canvas}></canvas>
         <div css={topright}>
+          <RandomComp stateCallback={this.setSettingAndRender} />
           <DownloadComp cb={this.download} />
           <SettingsMenu
             setSettings={this.setSetting}
