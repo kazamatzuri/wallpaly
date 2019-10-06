@@ -57,6 +57,7 @@ type SettingsState = {
   setSettings: any;
   displayColorPicker: boolean;
   randomColor: boolean;
+  color: any;
   wipe: boolean;
   res: string;
 };
@@ -77,6 +78,7 @@ export class SettingsMenu extends Component<object, SettingsState> {
       pRedraw: props.pRedraw,
       setSettings: props.setSettings,
       displayColorPicker: false,
+      color: props.parentState.color,
       randomColor: props.parentState.randomColor,
       wipe: props.parentState.wipeOnRender,
       res: "1920,1080"
@@ -84,16 +86,18 @@ export class SettingsMenu extends Component<object, SettingsState> {
   }
 
   handleClick = () => {
-    this.state.setSettings({
-      displayColorPicker: !this.state.parentState.displayColorPicker
+    this.setState({
+      displayColorPicker: !this.state.displayColorPicker
     });
   };
   handleClose = () => {
-    this.state.setSettings({ displayColorPicker: false });
+    this.setState({ displayColorPicker: false });
   };
 
   handleChange = (color: ColorResult) => {
+    console.log(color.rgb);
     this.state.setSettings({ color: color.rgb });
+    this.setState({ color: color.rgb });
   };
 
   handleRes = (event: any) => {
@@ -125,7 +129,7 @@ export class SettingsMenu extends Component<object, SettingsState> {
       width: "36px",
       height: "14px",
       borderRadius: "2px",
-      background: `rgba(${this.state.parentState.color.r}, ${this.state.parentState.color.g}, ${this.state.parentState.color.b},1.0)`
+      background: `rgba(${this.state.color.r}, ${this.state.color.g}, ${this.state.color.b},1.0)`
     };
     const popoverStyle: CSS.Properties = {
       position: "absolute",
@@ -259,7 +263,7 @@ export class SettingsMenu extends Component<object, SettingsState> {
                 <div style={popoverStyle}>
                   <div style={coverStyle} onClick={this.handleClose} />
                   <SketchPicker
-                    color={this.state.parentState.color}
+                    color={this.state.color}
                     onChange={this.handleChange}
                   />
                 </div>
