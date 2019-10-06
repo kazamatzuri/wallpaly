@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 
 import { SettingsMenu } from "./SettingsMenu";
 import DownloadComp from "./DownloadComp";
+/** @jsx jsx */
+import { jsx, css } from "@emotion/core";
 
 const initialState = {
   version: 1, //0
@@ -22,6 +24,17 @@ const initialState = {
   color: { r: 0, g: 0, b: 0 }, //13
   invcolor: { r: 255, g: 255, b: 255 } //14
 };
+
+const topright = css({
+  display: "flex",
+  position: "absolute",
+  top: "8px",
+  right: "16px",
+  fontSize: "18px",
+  zIndex: 100,
+  width: "100px",
+  justifyContent: "space-around"
+});
 
 export type LinesState = Readonly<typeof initialState>;
 
@@ -139,7 +152,7 @@ export class LinesCanvas extends Component<object, LinesState> {
     return (
       <div>
         <canvas id="linescanvas" ref={this.canvas}></canvas>
-        <div className="topright">
+        <div css={topright}>
           <DownloadComp cb={this.download} />
           <SettingsMenu
             setSettings={this.setSetting}
