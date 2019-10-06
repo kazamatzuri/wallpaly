@@ -153,7 +153,6 @@ export class SettingsMenu extends Component<object, SettingsState> {
               ValueLabelComponent={ValueLabelComponent}
               aria-label="custom thumb label"
               defaultValue={this.state.parentState.lineNumber}
-              value={this.state.parentState.lineNumber}
               min={20}
               max={300}
               onChangeCommitted={(event: object, value: any) => {
@@ -165,7 +164,6 @@ export class SettingsMenu extends Component<object, SettingsState> {
               ValueLabelComponent={ValueLabelComponent}
               aria-label="custom thumb label"
               defaultValue={this.state.parentState.anchorpoints}
-              value={this.state.parentState.anchorpoints}
               min={5}
               max={300}
               onChangeCommitted={(event: object, value: any) => {
@@ -177,7 +175,6 @@ export class SettingsMenu extends Component<object, SettingsState> {
               ValueLabelComponent={ValueLabelComponent}
               aria-label="custom thumb label"
               defaultValue={this.state.parentState.initialAmplitude}
-              value={this.state.parentState.initialAmplitude}
               min={20}
               max={300}
               onChangeCommitted={(event: object, value: any) => {
