@@ -14,7 +14,7 @@ function randomize(cb: any) {
   let r = {
     lineNumber: getRandomInt(280) + 20,
     seed: getRandomInt(9999),
-    anchorpoints: getRandomInt(30) + 30,
+    anchorpoints: getRandomInt(40) + 20,
     jitterX: getRandomInt(5),
     jitterY: getRandomInt(30),
     colorspread: getRandomInt(20) + 10,
