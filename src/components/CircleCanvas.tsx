@@ -3,7 +3,8 @@ import React, { createRef, Component } from "react";
 import PropTypes from "prop-types";
 
 import * as THREE from "three";
-import { FuzzyWobbleLine } from "../gfx/FuzzyWobbleLine";
+import { FuzzyWobble } from "../gfx/FuzzyWobble";
+import { FuzzyWobbleCircle } from "../gfx/FuzzyWobbleCircle";
 
 import seedrandom from "seedrandom";
 import { SettingsMenu } from "./SettingsMenu";
@@ -41,16 +42,16 @@ const topright = css({
   justifyContent: "space-around"
 });
 
-export type LinesState = Readonly<typeof initialState>;
+export type CircleState = Readonly<typeof initialState>;
 
-export class LinesCanvas extends Component<object, LinesState> {
+export class CircleCanvas extends Component<object, CircleState> {
   private canvas = createRef<HTMLCanvasElement>();
   private ctx?: CanvasRenderingContext2D;
   private pixeldata?: Float64Array;
   private roundedpixeldata?: Uint8ClampedArray;
   private img?: ImageData;
 
-  public state: LinesState = initialState;
+  public state: CircleState = initialState;
   static propTypes = {
     seed: PropTypes.number
   };
@@ -294,7 +295,7 @@ export class LinesCanvas extends Component<object, LinesState> {
    *
    */
   drawCurveMurder = () => {
-    let fwl = new FuzzyWobbleLine(this.state.width, this.state);
+    let fwl = new FuzzyWobbleCircle(this.state.width, this.state, 300);
 
     for (var i = 0; i < 60; i++) {
       this.drawSpreadCurve(fwl, i);
@@ -318,7 +319,7 @@ export class LinesCanvas extends Component<object, LinesState> {
     }
   };
 
-  drawSpreadCurve = (fwl: FuzzyWobbleLine, it: number) => {
+  drawSpreadCurve = (fwl: FuzzyWobble, it: number) => {
     let curve = new THREE.CatmullRomCurve3(fwl.getAnchors());
 
     //new THREE.SplineCurve(fwl.getPoints());
@@ -340,7 +341,7 @@ export class LinesCanvas extends Component<object, LinesState> {
   render = () => {
     return (
       <div>
-        <canvas id="linescanvas" ref={this.canvas}></canvas>
+        <canvas id="circlecanvas" ref={this.canvas}></canvas>
         <div css={topright}>
           <RandomComp stateCallback={this.setSettingAndRender} />
           <DownloadComp cb={this.download} />
