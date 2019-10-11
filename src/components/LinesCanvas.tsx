@@ -230,25 +230,25 @@ export class LinesCanvas extends Component<object, LinesState> {
   };
 
   componentDidMount = () => {
-    let lochash = window.location.hash;
-    if (lochash !== "") {
-      let vals = JSON.parse(decodeURI(lochash.replace("#", "")));
-      if (vals[0] === 1) {
-        this.setState({
-          ...this.state,
-          lineNumber: vals[1],
-          seed: vals[4],
-          anchorpoints: vals[5],
-          jitterX: vals[6],
-          jitterY: vals[7],
-          colorspread: vals[8],
-          initialAmplitude: vals[30],
-          wipeOnRender: vals[10],
-          randomColor: vals[11],
-          color: vals[13]
-        });
-      }
-    }
+    // let lochash = window.location.hash;
+    // if (lochash !== "") {
+    //   let vals = JSON.parse(decodeURI(lochash.replace("#", "")));
+    //   if (vals[0] === 1) {
+    //     this.setState({
+    //       ...this.state,
+    //       lineNumber: vals[1],
+    //       seed: vals[4],
+    //       anchorpoints: vals[5],
+    //       jitterX: vals[6],
+    //       jitterY: vals[7],
+    //       colorspread: vals[8],
+    //       initialAmplitude: vals[30],
+    //       wipeOnRender: vals[10],
+    //       randomColor: vals[11],
+    //       color: vals[13]
+    //     });
+    //   }
+    // }
     seedrandom(this.state.seed.toString(), { global: true });
 
     if (this.canvas.current) {
@@ -282,8 +282,9 @@ export class LinesCanvas extends Component<object, LinesState> {
         this.pixeldata = new Float64Array(this.roundedpixeldata.length);
       }
     }
-    window.location.hash = encodeURI(JSON.stringify(Object.values(this.state)));
+    //window.location.hash = encodeURI(JSON.stringify(Object.values(this.state)));
     this.drawCurveMurder();
+    console.log(this.state);
     this.commitImage();
   };
 
