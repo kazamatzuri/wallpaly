@@ -21,23 +21,21 @@ class FuzzyWobbleCircle extends FuzzyWobble {
   basepoints = () => {
     let points = Array<THREE.Vector3>();
     let t = -this.length / 2;
-
-    let stepsize = this.length / this.state.anchorpoints;
-    for (let pos = t; pos < this.length / 2; pos += stepsize) {
+    let l = Math.PI * this.radius;
+    let stepsize = l / this.state.anchorpoints;
+    for (let pos = t; pos < l; pos += stepsize) {
       let y =
         (Math.random() - 0.5) * this.state.initialAmplitude +
-        Math.sin(pos) * this.radius;
+        Math.sin(pos / this.radius) * this.radius;
       //tapering off to either side
       //Math.sin((pos + this.length / 2) * (Math.PI / this.length));
       let x =
         (Math.random() - 0.5) * this.state.initialAmplitude +
-        Math.cos(pos) * this.radius;
+        Math.cos(pos / this.radius) * this.radius;
 
-      let z =
-        (Math.random() - 0.5) *
-        this.state.colorspread *
-        //tapering off to either side
-        Math.sin((pos + this.length / 2) * (Math.PI / this.length));
+      let z = (Math.random() - 0.5) * this.state.colorspread;
+      //tapering off to either side
+      //Math.sin((pos + this.length / 2) * (Math.PI / this.length));
       points = [...points, new THREE.Vector3(x, y, z)];
     }
     return points;
