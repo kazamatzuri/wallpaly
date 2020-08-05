@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/wallpaly/static/css/main.0b5e823f.chunk.css",
+    "main.js": "/wallpaly/static/js/main.30af8035.chunk.js",
+    "main.js.map": "/wallpaly/static/js/main.30af8035.chunk.js.map",
+    "runtime-main.js": "/wallpaly/static/js/runtime-main.071b86a8.js",
+    "runtime-main.js.map": "/wallpaly/static/js/runtime-main.071b86a8.js.map",
+    "static/js/2.214747b6.chunk.js": "/wallpaly/static/js/2.214747b6.chunk.js",
+    "static/js/2.214747b6.chunk.js.map": "/wallpaly/static/js/2.214747b6.chunk.js.map",
+    "index.html": "/wallpaly/index.html",
+    "precache-manifest.cf1a920a78e0d4abd469e0a9e939588e.js": "/wallpaly/precache-manifest.cf1a920a78e0d4abd469e0a9e939588e.js",
+    "service-worker.js": "/wallpaly/service-worker.js",
+    "static/css/main.0b5e823f.chunk.css.map": "/wallpaly/static/css/main.0b5e823f.chunk.css.map"
+  }
+}
