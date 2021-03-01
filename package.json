@@ -23,7 +23,7 @@
     "react-scripts": "3.1.2",
     "reactcss": "^1.2.3",
     "seedrandom": "^3.0.5",
-    "three": "^0.108.0",
+    "three": "^0.125.0",
     "typescript": "3.6.3"
   },
   "scripts": {
