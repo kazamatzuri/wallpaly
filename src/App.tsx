@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { LinesCanvas } from "./components/LinesCanvas";
+// import { LinesCanvas } from "./components/LinesCanvas";
 import { CircleCanvas } from "./components/CircleCanvas";
 // import Grid from "@material-ui/core/Grid";
 const App: React.FC = () => {
