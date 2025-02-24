@@ -5,8 +5,6 @@ import Checkbox from "@material-ui/core/Checkbox";
 import { Tune } from "mdi-material-ui";
 import Typography from "@material-ui/core/Typography";
 import Slider from "@material-ui/core/Slider";
-import Tooltip from "@material-ui/core/Tooltip";
-import PopperJs from "popper.js";
 import { SketchPicker as SketchPickerType } from "react-color";
 import type { ColorResult, RGBColor } from "react-color";
 import CSS from "csstype";
@@ -14,11 +12,6 @@ import Select from "@material-ui/core/Select";
 import { LinesState } from "./LinesCanvas";
 import MenuItem from "@material-ui/core/MenuItem";
 
-interface ValueLabelProps {
-  children: React.ReactElement;
-  open: boolean;
-  value: number;
-}
 
 
 type SettingsState = {
