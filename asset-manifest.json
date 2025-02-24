@@ -1,15 +1,13 @@
 {
   "files": {
-    "main.css": "/wallpaly/static/css/main.0b5e823f.chunk.css",
-    "main.js": "/wallpaly/static/js/main.46f58bbd.chunk.js",
-    "main.js.map": "/wallpaly/static/js/main.46f58bbd.chunk.js.map",
-    "runtime-main.js": "/wallpaly/static/js/runtime-main.f5a4badc.js",
-    "runtime-main.js.map": "/wallpaly/static/js/runtime-main.f5a4badc.js.map",
-    "static/js/2.f4426453.chunk.js": "/wallpaly/static/js/2.f4426453.chunk.js",
-    "static/js/2.f4426453.chunk.js.map": "/wallpaly/static/js/2.f4426453.chunk.js.map",
+    "main.css": "/wallpaly/static/css/main.c51317f1.css",
+    "main.js": "/wallpaly/static/js/main.5b69480f.js",
     "index.html": "/wallpaly/index.html",
-    "precache-manifest.c7256f391cf9471dc5a32270d3f86015.js": "/wallpaly/precache-manifest.c7256f391cf9471dc5a32270d3f86015.js",
-    "service-worker.js": "/wallpaly/service-worker.js",
-    "static/css/main.0b5e823f.chunk.css.map": "/wallpaly/static/css/main.0b5e823f.chunk.css.map"
-  }
+    "main.c51317f1.css.map": "/wallpaly/static/css/main.c51317f1.css.map",
+    "main.5b69480f.js.map": "/wallpaly/static/js/main.5b69480f.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c51317f1.css",
+    "static/js/main.5b69480f.js"
+  ]
 }
