@@ -43,9 +43,12 @@ export type CircleState = Readonly<typeof initialState>;
 export class CircleCanvas extends Component<object, CircleState> {
   private canvas = createRef<HTMLCanvasElement>();
   private ctx?: CanvasRenderingContext2D;
-  private pixeldata?: Float64Array;
+  private pixeldata?: Float32Array; // Changed from Float64Array
   private roundedpixeldata?: Uint8ClampedArray;
   private img?: ImageData;
+  // Add reusable vectors for optimization
+  private tempVector = new THREE.Vector3();
+  private tempCloneVector = new THREE.Vector3();
 
   public state: CircleState = initialState;
   static propTypes = {
@@ -158,17 +161,20 @@ export class CircleCanvas extends Component<object, CircleState> {
     var grains = this.getRandomInt(20) + 5;
     let newc = 0.04 / grains;
 
+    // Reuse vectors instead of creating new ones
+    this.tempCloneVector.copy(center);
+    
     for (var i = 0; i < grains; i++) {
-      let tp = center.clone();
+      this.tempVector.copy(center);
       let t = Math.random() - 0.5;
-      tp.addScaledVector(dir, t * length);
+      this.tempVector.addScaledVector(dir, t * length);
       let basecolor = [
         newc * (this.state.invcolor.r / 255),
         newc * (this.state.invcolor.g / 255),
         newc * (this.state.invcolor.b / 255),
         0.0
       ];
-      this.addPixel(tp.x, tp.y, basecolor);
+      this.addPixel(this.tempVector.x, this.tempVector.y, basecolor);
     }
   };
 
@@ -260,7 +266,7 @@ export class CircleCanvas extends Component<object, CircleState> {
         this.state.height
       );
       this.roundedpixeldata = this.img.data;
-      this.pixeldata = new Float64Array(this.roundedpixeldata.length);
+      this.pixeldata = new Float32Array(this.roundedpixeldata.length);
       this.redraw();
     }
   };
@@ -276,7 +282,7 @@ export class CircleCanvas extends Component<object, CircleState> {
     if (this.state.wipeOnRender) {
       if (this.ctx && this.roundedpixeldata) {
         this.ctx.clearRect(0, 0, this.state.width, this.state.height);
-        this.pixeldata = new Float64Array(this.roundedpixeldata.length);
+        this.pixeldata = new Float32Array(this.roundedpixeldata.length);
       }
     }
     //window.location.hash = encodeURI(JSON.stringify(Object.values(this.state)));
