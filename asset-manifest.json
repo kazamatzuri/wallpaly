@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/wallpaly/static/css/main.c51317f1.css",
+    "main.css": "/wallpaly/static/css/main.94fa901f.css",
     "main.js": "/wallpaly/static/js/main.5b69480f.js",
     "index.html": "/wallpaly/index.html",
-    "main.c51317f1.css.map": "/wallpaly/static/css/main.c51317f1.css.map",
+    "main.94fa901f.css.map": "/wallpaly/static/css/main.94fa901f.css.map",
     "main.5b69480f.js.map": "/wallpaly/static/js/main.5b69480f.js.map"
   },
   "entrypoints": [
-    "static/css/main.c51317f1.css",
+    "static/css/main.94fa901f.css",
     "static/js/main.5b69480f.js"
   ]
 }
