@@ -1,17 +1,24 @@
 import React, { createRef, Component } from "react";
-
 import PropTypes from "prop-types";
-
 import * as THREE from "three";
 import { FuzzyWobble } from "../gfx/FuzzyWobble";
 import { FuzzyWobbleCircle } from "../gfx/FuzzyWobbleCircle";
-
 import seedrandom from "seedrandom";
 import { SettingsMenu } from "./SettingsMenu";
 import DownloadComp from "./DownloadComp";
 import RandomComp from "./RandomComp";
-/** @jsx jsx */
-import { jsx, css } from "@emotion/core";
+import styled from "@emotion/styled";
+
+const TopRight = styled.div`
+  display: flex;
+  position: absolute;
+  top: 8px;
+  right: 16px;
+  font-size: 18px;
+  z-index: 100;
+  width: 100px;
+  justify-content: space-around;
+`;
 
 const initialState = {
   version: 1, //0
@@ -30,17 +37,6 @@ const initialState = {
   color: { r: 0, g: 0, b: 0 }, //13
   invcolor: { r: 255, g: 255, b: 255 } //14
 };
-
-const topright = css({
-  display: "flex",
-  position: "absolute",
-  top: "8px",
-  right: "16px",
-  fontSize: "18px",
-  zIndex: 100,
-  width: "100px",
-  justifyContent: "space-around"
-});
 
 export type CircleState = Readonly<typeof initialState>;
 
@@ -342,7 +338,7 @@ export class CircleCanvas extends Component<object, CircleState> {
     return (
       <div>
         <canvas id="circlecanvas" ref={this.canvas}></canvas>
-        <div css={topright}>
+        <TopRight>
           <RandomComp stateCallback={this.setSettingAndRender} />
           <DownloadComp cb={this.download} />
           <SettingsMenu
@@ -350,7 +346,7 @@ export class CircleCanvas extends Component<object, CircleState> {
             parentState={this.state}
             pRedraw={this.redraw}
           />
-        </div>
+        </TopRight>
       </div>
     );
   };

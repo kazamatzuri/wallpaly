@@ -5,37 +5,29 @@ import Checkbox from "@material-ui/core/Checkbox";
 import { Tune } from "mdi-material-ui";
 import Typography from "@material-ui/core/Typography";
 import Slider from "@material-ui/core/Slider";
-import PropTypes from "prop-types";
 import Tooltip from "@material-ui/core/Tooltip";
 import PopperJs from "popper.js";
-import { SketchPicker, ColorResult } from "react-color";
+import { SketchPicker as SketchPickerType } from "react-color";
+import type { ColorResult, RGBColor } from "react-color";
 import CSS from "csstype";
 import Select from "@material-ui/core/Select";
 import { LinesState } from "./LinesCanvas";
 import MenuItem from "@material-ui/core/MenuItem";
 
-ValueLabelComponent.propTypes = {
-  children: PropTypes.element.isRequired,
-  open: PropTypes.bool.isRequired,
-  value: PropTypes.number.isRequired
-};
-
-interface Props {
+interface ValueLabelProps {
   children: React.ReactElement;
   open: boolean;
   value: number;
 }
 
-function ValueLabelComponent(props: Props) {
+function ValueLabelComponent(props: ValueLabelProps) {
   const { children, open, value } = props;
-
   const popperRef = React.useRef<PopperJs | null>(null);
   React.useEffect(() => {
     if (popperRef.current) {
       popperRef.current.update();
     }
   });
-
   return (
     <Tooltip
       PopperProps={{
@@ -53,25 +45,21 @@ function ValueLabelComponent(props: Props) {
 
 type SettingsState = {
   parentState: LinesState;
-  pRedraw: any;
-  setSettings: any;
+  pRedraw: () => void;
+  setSettings: (settings: Partial<LinesState>) => void;
   displayColorPicker: boolean;
   randomColor: boolean;
-  color: any;
+  color: RGBColor;
   wipe: boolean;
   res: string;
 };
 
-export class SettingsMenu extends Component<object, SettingsState> {
-  public state: SettingsState;
-
-  static propTypes = {
-    setSettings: PropTypes.func.isRequired,
-    parentState: PropTypes.any,
-    pRedraw: PropTypes.any
-  };
-
-  constructor(props: SettingsState) {
+export class SettingsMenu extends Component<{
+  setSettings: (settings: Partial<LinesState>) => void;
+  parentState: LinesState;
+  pRedraw: () => void;
+}, SettingsState> {
+  constructor(props: any) {
     super(props);
     this.state = {
       parentState: props.parentState,
@@ -135,14 +123,13 @@ export class SettingsMenu extends Component<object, SettingsState> {
       position: "absolute",
       zIndex: 2
     };
+
     return (
       <div className="settingsbutton">
         <Tune />
-
         <div className="settingsmenu">
           <div>
             <Typography gutterBottom>Resolution</Typography>
-
             <Select value={this.state.res} onChange={this.handleRes}>
               <MenuItem value={"1920,1080"}>1920x1080</MenuItem>
               <MenuItem value={"2560,1080"}>2560x1080</MenuItem>
@@ -151,70 +138,69 @@ export class SettingsMenu extends Component<object, SettingsState> {
               <MenuItem value={"3840,2160"}>3840x2160</MenuItem>
               <MenuItem value={"5120,2160"}>5120x2160</MenuItem>
             </Select>
-
             <Typography gutterBottom>Number of lines</Typography>
             <Slider
-              ValueLabelComponent={ValueLabelComponent}
+              valueLabelDisplay="auto"
               aria-label="custom thumb label"
               defaultValue={this.state.parentState.lineNumber}
               min={20}
               max={300}
-              onChangeCommitted={(event: object, value: any) => {
+              onChangeCommitted={(event: any, value: any) => {
                 this.state.setSettings({ lineNumber: value });
               }}
             />
             <Typography gutterBottom>Number of anchor points</Typography>
             <Slider
-              ValueLabelComponent={ValueLabelComponent}
+              valueLabelDisplay="auto"
               aria-label="custom thumb label"
               defaultValue={this.state.parentState.anchorpoints}
               min={5}
               max={300}
-              onChangeCommitted={(event: object, value: any) => {
+              onChangeCommitted={(event: any, value: any) => {
                 this.state.setSettings({ anchorpoints: value });
               }}
             />
             <Typography gutterBottom>Initialization amplitude</Typography>
             <Slider
-              ValueLabelComponent={ValueLabelComponent}
+              valueLabelDisplay="auto"
               aria-label="custom thumb label"
               defaultValue={this.state.parentState.initialAmplitude}
               min={20}
               max={300}
-              onChangeCommitted={(event: object, value: any) => {
+              onChangeCommitted={(event: any, value: any) => {
                 this.state.setSettings({ initialAmplitude: value });
               }}
             />
             <Typography gutterBottom>Anchor points jitter for x</Typography>
             <Slider
-              ValueLabelComponent={ValueLabelComponent}
+              valueLabelDisplay="auto"
               aria-label="custom thumb label"
               defaultValue={this.state.parentState.jitterX}
               min={0}
               max={200}
-              onChangeCommitted={(event: object, value: any) => {
+              onChangeCommitted={(event: any, value: any) => {
                 this.state.setSettings({ jitterX: value });
               }}
             />
             <Typography gutterBottom>Anchor points jitter for y</Typography>
             <Slider
-              ValueLabelComponent={ValueLabelComponent}
+              valueLabelDisplay="auto"
               aria-label="custom thumb label"
               defaultValue={this.state.parentState.jitterY}
               min={0}
               max={200}
-              onChangeCommitted={(event: object, value: any) => {
+              onChangeCommitted={(event: any, value: any) => {
                 this.state.setSettings({ jitterY: value });
               }}
             />
             <Typography gutterBottom>Max colorspread</Typography>
             <Slider
-              ValueLabelComponent={ValueLabelComponent}
+              valueLabelDisplay="auto"
               aria-label="custom thumb label"
               defaultValue={this.state.parentState.colorspread}
               min={20}
               max={300}
-              onChangeCommitted={(event: object, value: any) => {
+              onChangeCommitted={(event: any, value: any) => {
                 this.state.setSettings({ colorspread: value });
               }}
             />
@@ -262,10 +248,10 @@ export class SettingsMenu extends Component<object, SettingsState> {
               {this.state.displayColorPicker ? (
                 <div style={popoverStyle}>
                   <div style={coverStyle} onClick={this.handleClose} />
-                  <SketchPicker
-                    color={this.state.color}
-                    onChange={this.handleChange}
-                  />
+                  {React.createElement(SketchPickerType as any, {
+                    color: this.state.color,
+                    onChange: this.handleChange
+                  })}
                 </div>
               ) : null}
             </div>
