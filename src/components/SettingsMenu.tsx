@@ -20,28 +20,6 @@ interface ValueLabelProps {
   value: number;
 }
 
-function ValueLabelComponent(props: ValueLabelProps) {
-  const { children, open, value } = props;
-  const popperRef = React.useRef<PopperJs | null>(null);
-  React.useEffect(() => {
-    if (popperRef.current) {
-      popperRef.current.update();
-    }
-  });
-  return (
-    <Tooltip
-      PopperProps={{
-        popperRef
-      }}
-      open={open}
-      enterTouchDelay={0}
-      placement="top"
-      title={value}
-    >
-      {children}
-    </Tooltip>
-  );
-}
 
 type SettingsState = {
   parentState: LinesState;
