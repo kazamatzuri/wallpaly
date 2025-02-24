@@ -53,6 +53,6 @@
   "devDependencies": {
     "@emotion/types": "^0.7.0",
     "eslint-config-react-app": "^5.0.1",
-    "gh-pages": "^2.1.1"
+    "gh-pages": "^5.0.0"
   }
 }
