@@ -138,6 +138,13 @@ export class CircleCanvas extends Component<object, CircleState> {
     }
   };
 
+  getImageDataUrl = (): string => {
+    if (this.canvas.current) {
+      return this.canvas.current.toDataURL('image/png');
+    }
+    return '';
+  };
+
   /**
    * waddya think?! ;)
    */
@@ -346,7 +353,11 @@ export class CircleCanvas extends Component<object, CircleState> {
         <canvas id="circlecanvas" ref={this.canvas}></canvas>
         <TopRight>
           <RandomComp stateCallback={this.setSettingAndRender} />
-          <DownloadComp cb={this.download} />
+          <DownloadComp
+            cb={this.download}
+            imageDataUrl={this.getImageDataUrl()}
+            generationParams={this.state}
+          />
           <SettingsMenu
             setSettings={this.setSetting}
             parentState={this.state}

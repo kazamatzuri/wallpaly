@@ -1,51 +1,49 @@
-import React from "react";
+import React, { useState } from "react";
+import { ThemeProvider, createTheme } from "@material-ui/core/styles";
+import { CssBaseline } from "@material-ui/core";
 import "./App.css";
-// import { LinesCanvas } from "./components/LinesCanvas";
+import { AuthProvider } from "./context/AuthContext";
+import { Header } from "./components/Header";
 import { CircleCanvas } from "./components/CircleCanvas";
-// import Grid from "@material-ui/core/Grid";
+import { WallpaperGallery } from "./components/WallpaperGallery";
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#667eea',
+    },
+    secondary: {
+      main: '#764ba2',
+    },
+  },
+});
+
 const App: React.FC = () => {
+  const [currentTab, setCurrentTab] = useState('generator');
+
+  const renderContent = () => {
+    switch (currentTab) {
+      case 'gallery':
+        return <WallpaperGallery sortBy="recent" />;
+      case 'trending':
+        return <WallpaperGallery sortBy="trending" />;
+      case 'popular':
+        return <WallpaperGallery sortBy="popular" />;
+      default:
+        return <CircleCanvas />;
+    }
+  };
+
   return (
-    <div className="App">
-      {/* <LinesCanvas /> */}
-      <CircleCanvas />
-      {/* <Grid container spacing={0}>
-        <Grid container spacing={0}>
-          <Grid item xs={4}>
-            <LinesCanvas width={window.innerWidth/3} height={window.innerHeight/3}></LinesCanvas>
-          </Grid>
-          <Grid item xs={4}>
-            <LinesCanvas width={window.innerWidth/3} height={window.innerHeight/3}></LinesCanvas>
-          </Grid>
-          <Grid item xs={4}>
-            <LinesCanvas width={window.innerWidth/3} height={window.innerHeight/3}></LinesCanvas>
-          </Grid>
-        </Grid>
-        <Grid container spacing={0}>
-          <Grid item xs={4}>
-            <LinesCanvas width={window.innerWidth/3} height={window.innerHeight/3}></LinesCanvas>
-          </Grid>
-          <Grid item xs={4}>
-            <LinesCanvas width={window.innerWidth/3} height={window.innerHeight/3}></LinesCanvas>
-          </Grid>
-          <Grid item xs={4}>
-            <LinesCanvas width={window.innerWidth/3} height={window.innerHeight/3}></LinesCanvas>
-          </Grid>
-        </Grid>
-
-        <Grid container spacing={0}>
-          <Grid item xs={4}>
-            <LinesCanvas width={window.innerWidth/3} height={window.innerHeight/3}></LinesCanvas>
-          </Grid>
-          <Grid item xs={4}>
-            <LinesCanvas width={window.innerWidth/3} height={window.innerHeight/3}></LinesCanvas>
-          </Grid>
-          <Grid item xs={4}>
-            <LinesCanvas width={window.innerWidth/3} height={window.innerHeight/3}></LinesCanvas>
-          </Grid>
-        </Grid>
-
-      </Grid> */}
-    </div>
+    <ThemeProvider theme={theme}>
+      <AuthProvider>
+        <CssBaseline />
+        <div className="App">
+          <Header currentTab={currentTab} onTabChange={setCurrentTab} />
+          {renderContent()}
+        </div>
+      </AuthProvider>
+    </ThemeProvider>
   );
 };
 
