@@ -1,5 +1,4 @@
 import React, { createRef, Component } from "react";
-import PropTypes from "prop-types";
 import * as THREE from "three";
 import { FuzzyWobble } from "../gfx/FuzzyWobble";
 import { FuzzyWobbleCircle } from "../gfx/FuzzyWobbleCircle";
@@ -40,22 +39,22 @@ const initialState = {
 
 export type CircleState = Readonly<typeof initialState>;
 
-export class CircleCanvas extends Component<object, CircleState> {
+interface CircleCanvasProps {
+  seed?: number;
+}
+
+export class CircleCanvas extends Component<CircleCanvasProps, CircleState> {
   private canvas = createRef<HTMLCanvasElement>();
   private ctx?: CanvasRenderingContext2D;
-  private pixeldata?: Float32Array; // Changed from Float64Array
+  private pixeldata?: Float32Array;
   private roundedpixeldata?: Uint8ClampedArray;
   private img?: ImageData;
-  // Add reusable vectors for optimization
   private tempVector = new THREE.Vector3();
   private tempCloneVector = new THREE.Vector3();
 
   public state: CircleState = initialState;
-  static propTypes = {
-    seed: PropTypes.number
-  };
 
-  constructor(props: any) {
+  constructor(props: CircleCanvasProps) {
     super(props);
 
     let seed = 0;

@@ -1,8 +1,7 @@
 import passport from 'passport';
 import { Strategy as GitHubStrategy } from 'passport-github2';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { User } from '@prisma/client';
+import prisma from '../lib/prisma';
 
 passport.use(new GitHubStrategy({
   clientID: process.env.GITHUB_CLIENT_ID!,
@@ -16,7 +15,6 @@ async (accessToken: string, refreshToken: string, profile: any, done: Function) 
     });
 
     if (existingUser) {
-      // Update user info in case it changed on GitHub
       const updatedUser = await prisma.user.update({
         where: { id: existingUser.id },
         data: {
@@ -28,7 +26,6 @@ async (accessToken: string, refreshToken: string, profile: any, done: Function) 
       return done(null, updatedUser);
     }
 
-    // Create new user
     const newUser = await prisma.user.create({
       data: {
         githubId: profile.id,
@@ -44,8 +41,8 @@ async (accessToken: string, refreshToken: string, profile: any, done: Function) 
   }
 }));
 
-passport.serializeUser((user: any, done) => {
-  done(null, user.id);
+passport.serializeUser((user: Express.User, done) => {
+  done(null, (user as User).id);
 });
 
 passport.deserializeUser(async (id: string, done) => {

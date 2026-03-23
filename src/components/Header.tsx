@@ -4,11 +4,10 @@ import {
   Toolbar,
   Typography,
   Box,
-  Button,
   Tabs,
   Tab
-} from '@material-ui/core';
-import { Palette } from '@material-ui/icons';
+} from '@mui/material';
+import { Palette } from '@mui/icons-material';
 import styled from '@emotion/styled';
 import { AuthButton } from './AuthButton';
 

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button, Avatar, Menu, MenuItem, Typography, Box } from '@material-ui/core';
-import { AccountCircle } from '@material-ui/icons';
+import { Button, Avatar, Menu, MenuItem, Typography, Box } from '@mui/material';
+import { AccountCircle } from '@mui/icons-material';
 import styled from '@emotion/styled';
 import { useAuth } from '../context/AuthContext';
 

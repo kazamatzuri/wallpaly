@@ -1,5 +1,4 @@
 import React, { createRef, Component } from "react";
-import PropTypes from "prop-types";
 import * as THREE from "three";
 import { FuzzyWobbleLine } from "../gfx/FuzzyWobbleLine";
 import seedrandom from "seedrandom";
@@ -39,7 +38,11 @@ const initialState = {
 
 export type LinesState = Readonly<typeof initialState>;
 
-export class LinesCanvas extends Component<object, LinesState> {
+interface LinesCanvasProps {
+  seed?: number;
+}
+
+export class LinesCanvas extends Component<LinesCanvasProps, LinesState> {
   private canvas = createRef<HTMLCanvasElement>();
   private ctx?: CanvasRenderingContext2D;
   private pixeldata?: Float64Array;
@@ -47,11 +50,8 @@ export class LinesCanvas extends Component<object, LinesState> {
   private img?: ImageData;
 
   public state: LinesState = initialState;
-  static propTypes = {
-    seed: PropTypes.number
-  };
 
-  constructor(props: any) {
+  constructor(props: LinesCanvasProps) {
     super(props);
 
     let seed = 0;

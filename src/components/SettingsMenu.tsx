@@ -1,18 +1,16 @@
 import React, { Component } from "react";
-import Button from "@material-ui/core/Button";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
+import Button from "@mui/material/Button";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 import { Tune } from "mdi-material-ui";
-import Typography from "@material-ui/core/Typography";
-import Slider from "@material-ui/core/Slider";
+import Typography from "@mui/material/Typography";
+import Slider from "@mui/material/Slider";
 import { SketchPicker as SketchPickerType } from "react-color";
 import type { ColorResult, RGBColor } from "react-color";
 import CSS from "csstype";
-import Select from "@material-ui/core/Select";
+import Select from "@mui/material/Select";
 import { LinesState } from "./LinesCanvas";
-import MenuItem from "@material-ui/core/MenuItem";
-
-
+import MenuItem from "@mui/material/MenuItem";
 
 type SettingsState = {
   parentState: LinesState;
@@ -30,7 +28,11 @@ export class SettingsMenu extends Component<{
   parentState: LinesState;
   pRedraw: () => void;
 }, SettingsState> {
-  constructor(props: any) {
+  constructor(props: {
+    setSettings: (settings: Partial<LinesState>) => void;
+    parentState: LinesState;
+    pRedraw: () => void;
+  }) {
     super(props);
     this.state = {
       parentState: props.parentState,
@@ -54,7 +56,6 @@ export class SettingsMenu extends Component<{
   };
 
   handleChange = (color: ColorResult) => {
-    console.log(color.rgb);
     this.state.setSettings({ color: color.rgb });
     this.setState({ color: color.rgb });
   };

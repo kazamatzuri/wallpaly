@@ -1,11 +1,16 @@
 import { Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import sharp from 'sharp';
 import fs from 'fs/promises';
 import path from 'path';
+import crypto from 'crypto';
 import { AuthenticatedRequest } from '../middleware/auth';
+import prisma from '../lib/prisma';
 
-const prisma = new PrismaClient();
+const MAX_TITLE_LENGTH = 255;
+const MAX_DESCRIPTION_LENGTH = 2000;
+const MAX_TAG_LENGTH = 50;
+const MAX_TAGS = 10;
+const MAX_PAGE_LIMIT = 100;
 
 export const saveGeneratedWallpaper = async (req: AuthenticatedRequest, res: Response) => {
   try {
@@ -17,6 +22,27 @@ export const saveGeneratedWallpaper = async (req: AuthenticatedRequest, res: Res
 
     if (!imageDataUrl || !generationParams) {
       return res.status(400).json({ error: 'Image data and generation parameters are required' });
+    }
+
+    // Validate string lengths
+    if (title && title.length > MAX_TITLE_LENGTH) {
+      return res.status(400).json({ error: `Title must be ${MAX_TITLE_LENGTH} characters or fewer` });
+    }
+    if (description && description.length > MAX_DESCRIPTION_LENGTH) {
+      return res.status(400).json({ error: `Description must be ${MAX_DESCRIPTION_LENGTH} characters or fewer` });
+    }
+
+    // Validate tags
+    if (tags) {
+      const tagList = Array.isArray(tags) ? tags : JSON.parse(tags);
+      if (tagList.length > MAX_TAGS) {
+        return res.status(400).json({ error: `Maximum ${MAX_TAGS} tags allowed` });
+      }
+      for (const tag of tagList) {
+        if (typeof tag !== 'string' || tag.length > MAX_TAG_LENGTH) {
+          return res.status(400).json({ error: `Each tag must be a string of ${MAX_TAG_LENGTH} characters or fewer` });
+        }
+      }
     }
 
     // Validate that this is a data URL from our generator
@@ -38,8 +64,8 @@ export const saveGeneratedWallpaper = async (req: AuthenticatedRequest, res: Res
     const base64Data = imageDataUrl.replace(/^data:image\/\w+;base64,/, '');
     const imageBuffer = Buffer.from(base64Data, 'base64');
 
-    // Process and optimize image
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.webp`;
+    // Process and optimize image with UUID filename
+    const fileName = `${crypto.randomUUID()}.webp`;
     const filePath = path.join(process.env.UPLOAD_DIR || './uploads', fileName);
 
     const processedBuffer = await sharp(imageBuffer)
@@ -59,15 +85,15 @@ export const saveGeneratedWallpaper = async (req: AuthenticatedRequest, res: Res
     // Save to database
     const wallpaper = await prisma.wallpaper.create({
       data: {
-        title: title || null,
-        description: description || null,
+        title: title?.trim() || null,
+        description: description?.trim() || null,
         creatorId: req.user.id,
         imageUrl: `/uploads/${fileName}`,
         generationParams: params,
         width: metadata.width || 0,
         height: metadata.height || 0,
         fileSize: processedBuffer.length,
-        tags: tags ? (Array.isArray(tags) ? tags : JSON.parse(tags)) : []
+        tags: tags ? (Array.isArray(tags) ? tags.map((t: string) => t.trim()) : JSON.parse(tags)) : []
       },
       include: {
         creator: {
@@ -90,15 +116,16 @@ export const saveGeneratedWallpaper = async (req: AuthenticatedRequest, res: Res
 export const getWallpapers = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const {
-      page = 1,
-      limit = 20,
       sort = 'recent',
       tags,
       search,
       resolution
     } = req.query;
 
-    const skip = (Number(page) - 1) * Number(limit);
+    // Enforce pagination limits
+    const page = Math.max(Number(req.query.page) || 1, 1);
+    const limit = Math.min(Math.max(Number(req.query.limit) || 20, 1), MAX_PAGE_LIMIT);
+    const skip = (page - 1) * limit;
 
     let orderBy: any = { createdAt: 'desc' };
 
@@ -121,16 +148,19 @@ export const getWallpapers = async (req: AuthenticatedRequest, res: Response) =>
     }
 
     if (search) {
+      const searchStr = String(search).slice(0, 200); // Cap search length
       where.OR = [
-        { title: { contains: search as string, mode: 'insensitive' } },
-        { description: { contains: search as string, mode: 'insensitive' } }
+        { title: { contains: searchStr, mode: 'insensitive' } },
+        { description: { contains: searchStr, mode: 'insensitive' } }
       ];
     }
 
     if (resolution) {
       const [width, height] = (resolution as string).split('x').map(Number);
-      where.width = width;
-      where.height = height;
+      if (width && height) {
+        where.width = width;
+        where.height = height;
+      }
     }
 
     const [wallpapers, total] = await Promise.all([
@@ -154,25 +184,17 @@ export const getWallpapers = async (req: AuthenticatedRequest, res: Response) =>
         },
         orderBy,
         skip,
-        take: Number(limit)
+        take: limit
       }),
       prisma.wallpaper.count({ where })
     ]);
 
-    // Increment view count
-    if (wallpapers.length > 0) {
-      await prisma.wallpaper.updateMany({
-        where: { id: { in: wallpapers.map(w => w.id) } },
-        data: { viewCount: { increment: 1 } }
-      });
-    }
-
     res.json({
       data: wallpapers,
       total,
-      page: Number(page),
-      limit: Number(limit),
-      totalPages: Math.ceil(total / Number(limit))
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
     });
   } catch (error) {
     console.error('Get wallpapers error:', error);
@@ -218,7 +240,7 @@ export const getWallpaper = async (req: AuthenticatedRequest, res: Response) => 
       return res.status(404).json({ error: 'Wallpaper not found' });
     }
 
-    // Increment view count
+    // Increment view count only on detail view
     await prisma.wallpaper.update({
       where: { id },
       data: { viewCount: { increment: 1 } }

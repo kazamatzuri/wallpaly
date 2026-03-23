@@ -35,17 +35,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const checkAuth = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      setLoading(false);
-      return;
-    }
-
     const response = await api.getCurrentUser();
     if (response.data) {
       setUser(response.data.user);
-    } else {
-      localStorage.removeItem('token');
     }
     setLoading(false);
   };
@@ -55,19 +47,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    const handleTokenFromCallback = () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const token = urlParams.get('token');
-
-      if (token) {
-        localStorage.setItem('token', token);
-        window.history.replaceState({}, document.title, '/');
-        checkAuth();
-      }
-    };
-
+    // After OAuth callback redirect, check auth via cookie
     if (window.location.pathname === '/auth/callback') {
-      handleTokenFromCallback();
+      checkAuth().then(() => {
+        window.history.replaceState({}, document.title, '/');
+      });
     }
   }, []);
 

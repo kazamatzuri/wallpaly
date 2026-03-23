@@ -12,9 +12,9 @@ import {
   FormControl,
   InputLabel,
   TextField,
-  Chip
-} from '@material-ui/core';
-import { Pagination } from '@material-ui/lab';
+  Chip,
+  Pagination
+} from '@mui/material';
 import styled from '@emotion/styled';
 import { api } from '../services/api';
 import { VoteButtons } from './VoteButton';
@@ -66,7 +66,7 @@ const CreatorInfo = styled(Box)`
   margin-top: 8px;
 `;
 
-const Avatar = styled('img')`
+const AvatarImg = styled('img')`
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -160,7 +160,7 @@ export const WallpaperGallery: React.FC<WallpaperGalleryProps> = ({ sortBy = 're
 
         <FormControl variant="outlined" size="small" style={{ minWidth: '120px' }}>
           <InputLabel>Sort by</InputLabel>
-          <Select value={sort} onChange={(e) => setSort(e.target.value as string)}>
+          <Select value={sort} onChange={(e) => setSort(e.target.value as string)} label="Sort by">
             <MenuItem value="recent">Recent</MenuItem>
             <MenuItem value="trending">Trending</MenuItem>
             <MenuItem value="popular">Popular</MenuItem>
@@ -172,6 +172,7 @@ export const WallpaperGallery: React.FC<WallpaperGalleryProps> = ({ sortBy = 're
           <Select
             value={selectedResolution}
             onChange={(e) => setSelectedResolution(e.target.value as string)}
+            label="Resolution"
           >
             <MenuItem value="">All</MenuItem>
             {resolutions.map(res => (
@@ -204,7 +205,7 @@ export const WallpaperGallery: React.FC<WallpaperGalleryProps> = ({ sortBy = 're
                 </Typography>
 
                 <Typography variant="body2" color="textSecondary" noWrap>
-                  {wallpaper.width} × {wallpaper.height}
+                  {wallpaper.width} x {wallpaper.height}
                 </Typography>
 
                 {wallpaper.description && (
@@ -218,7 +219,7 @@ export const WallpaperGallery: React.FC<WallpaperGalleryProps> = ({ sortBy = 're
                 {wallpaper.creator && (
                   <CreatorInfo>
                     {wallpaper.creator.avatarUrl && (
-                      <Avatar src={wallpaper.creator.avatarUrl} alt={wallpaper.creator.username} />
+                      <AvatarImg src={wallpaper.creator.avatarUrl} alt={wallpaper.creator.username} />
                     )}
                     <Typography variant="caption" color="textSecondary">
                       by {wallpaper.creator.displayName || wallpaper.creator.username}

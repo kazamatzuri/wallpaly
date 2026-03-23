@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Download, Share } from "mdi-material-ui";
-import { IconButton, Tooltip } from "@material-ui/core";
+import { IconButton, Tooltip } from "@mui/material";
 import { ShareModal } from "./ShareModal";
 
 interface DownloadProps {

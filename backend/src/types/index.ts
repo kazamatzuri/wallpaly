@@ -1,8 +1,4 @@
-import { User } from '@prisma/client';
-
-export interface AuthenticatedRequest extends Request {
-  user?: User;
-}
+export { AuthenticatedRequest } from '../middleware/auth';
 
 export interface WallpaperGenerationParams {
   version: number;

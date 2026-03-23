@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { ThemeProvider, createTheme } from "@material-ui/core/styles";
-import { CssBaseline } from "@material-ui/core";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { CssBaseline } from "@mui/material";
 import "./App.css";
 import { AuthProvider } from "./context/AuthContext";
 import { Header } from "./components/Header";

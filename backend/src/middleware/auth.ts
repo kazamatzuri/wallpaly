@@ -1,23 +1,25 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma';
 
-const prisma = new PrismaClient();
+interface JwtPayload {
+  userId: string;
+  githubId: number;
+}
 
 export interface AuthenticatedRequest extends Request {
-  user?: any;
+  user?: Express.User;
 }
 
 export const authenticateToken = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  const token = req.cookies?.token;
 
   if (!token) {
     return res.status(401).json({ error: 'Access token required' });
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
       select: {
@@ -41,15 +43,14 @@ export const authenticateToken = async (req: AuthenticatedRequest, res: Response
 };
 
 export const optionalAuth = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  const token = req.cookies?.token;
 
   if (!token) {
     return next();
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
       select: {

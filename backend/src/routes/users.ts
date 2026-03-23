@@ -1,15 +1,15 @@
 import express from 'express';
-import { PrismaClient } from '@prisma/client';
 import { optionalAuth } from '../middleware/auth';
+import prisma from '../lib/prisma';
 
 const router = express.Router();
-const prisma = new PrismaClient();
 
 // Get user profile
 router.get('/:username', optionalAuth, async (req, res) => {
   try {
     const { username } = req.params;
-    const { page = 1, limit = 20 } = req.query;
+    const page = Math.max(Number(req.query.page) || 1, 1);
+    const limit = Math.min(Math.max(Number(req.query.limit) || 20, 1), 100);
 
     const user = await prisma.user.findUnique({
       where: { username },
@@ -33,7 +33,7 @@ router.get('/:username', optionalAuth, async (req, res) => {
     }
 
     // Get user's wallpapers
-    const skip = (Number(page) - 1) * Number(limit);
+    const skip = (page - 1) * limit;
     const wallpapers = await prisma.wallpaper.findMany({
       where: { creatorId: user.id },
       include: {
@@ -47,15 +47,15 @@ router.get('/:username', optionalAuth, async (req, res) => {
       },
       orderBy: { createdAt: 'desc' },
       skip,
-      take: Number(limit)
+      take: limit
     });
 
     res.json({
       user,
       wallpapers,
       pagination: {
-        page: Number(page),
-        limit: Number(limit),
+        page,
+        limit,
         total: user._count.wallpapers
       }
     });

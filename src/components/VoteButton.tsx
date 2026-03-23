@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { IconButton, Typography, Box } from '@material-ui/core';
-import { ThumbUp, ThumbDown } from '@material-ui/icons';
+import { IconButton, Typography, Box } from '@mui/material';
+import { ThumbUp, ThumbDown } from '@mui/icons-material';
 import styled from '@emotion/styled';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -12,8 +12,8 @@ const VoteContainer = styled(Box)`
   gap: 4px;
 `;
 
-const VoteButton = styled(IconButton)<{ active?: boolean }>`
-  color: ${props => props.active ? '#1976d2' : 'rgba(0, 0, 0, 0.54)'};
+const VoteBtn = styled(IconButton)<{ active?: string }>`
+  color: ${props => props.active === 'true' ? '#1976d2' : 'rgba(0, 0, 0, 0.54)'};
   &:hover {
     background-color: rgba(25, 118, 210, 0.04);
   }
@@ -63,27 +63,27 @@ export const VoteButtons: React.FC<VoteButtonsProps> = ({
 
   return (
     <VoteContainer>
-      <VoteButton
-        active={userVote === 1}
+      <VoteBtn
+        active={(userVote === 1).toString()}
         onClick={() => handleVote(1)}
         disabled={loading}
         size="small"
       >
         <ThumbUp />
-      </VoteButton>
+      </VoteBtn>
 
       <Typography variant="body2" color="textSecondary">
         {voteScore}
       </Typography>
 
-      <VoteButton
-        active={userVote === -1}
+      <VoteBtn
+        active={(userVote === -1).toString()}
         onClick={() => handleVote(-1)}
         disabled={loading}
         size="small"
       >
         <ThumbDown />
-      </VoteButton>
+      </VoteBtn>
     </VoteContainer>
   );
 };

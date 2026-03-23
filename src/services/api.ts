@@ -7,19 +7,6 @@ interface ApiResponse<T = any> {
 }
 
 class ApiService {
-  private getHeaders(): Record<string, string> {
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
-
-    const token = localStorage.getItem('token');
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    return headers;
-  }
-
   private async request<T>(
     endpoint: string,
     options: RequestInit = {}
@@ -28,8 +15,9 @@ class ApiService {
       const url = `${API_BASE}${endpoint}`;
       const response = await fetch(url, {
         ...options,
+        credentials: 'include',
         headers: {
-          ...this.getHeaders(),
+          'Content-Type': 'application/json',
           ...options.headers,
         },
       });
@@ -52,7 +40,6 @@ class ApiService {
   }
 
   async logout() {
-    localStorage.removeItem('token');
     return this.request('/auth/logout', { method: 'POST' });
   }
 
@@ -83,27 +70,17 @@ class ApiService {
     return this.request<any>(`/wallpapers/${id}`);
   }
 
-  async uploadWallpaper(formData: FormData) {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE}/wallpapers`, {
-        method: 'POST',
-        headers: {
-          'Authorization': token ? `Bearer ${token}` : '',
-        },
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return { error: data.error || 'Upload failed' };
-      }
-
-      return { data };
-    } catch (error) {
-      return { error: 'Network error' };
-    }
+  async saveGeneratedWallpaper(wallpaperData: {
+    title?: string;
+    description?: string;
+    imageDataUrl: string;
+    generationParams: any;
+    tags?: string[];
+  }) {
+    return this.request<any>('/wallpapers', {
+      method: 'POST',
+      body: JSON.stringify(wallpaperData),
+    });
   }
 
   async deleteWallpaper(id: string) {

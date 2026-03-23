@@ -1,9 +1,8 @@
 import express from 'express';
-import { PrismaClient } from '@prisma/client';
 import { authenticateToken, optionalAuth } from '../middleware/auth';
+import prisma from '../lib/prisma';
 
 const router = express.Router();
-const prisma = new PrismaClient();
 
 // Create collection
 router.post('/', authenticateToken, async (req, res) => {
@@ -12,6 +11,12 @@ router.post('/', authenticateToken, async (req, res) => {
 
     if (!name?.trim()) {
       return res.status(400).json({ error: 'Collection name is required' });
+    }
+    if (name.trim().length > 255) {
+      return res.status(400).json({ error: 'Collection name must be 255 characters or fewer' });
+    }
+    if (description && description.trim().length > 2000) {
+      return res.status(400).json({ error: 'Description must be 2000 characters or fewer' });
     }
 
     const collection = await prisma.collection.create({
@@ -43,7 +48,8 @@ router.post('/', authenticateToken, async (req, res) => {
 router.get('/:id', optionalAuth, async (req, res) => {
   try {
     const { id } = req.params;
-    const { page = 1, limit = 20 } = req.query;
+    const page = Math.max(Number(req.query.page) || 1, 1);
+    const limit = Math.min(Math.max(Number(req.query.limit) || 20, 1), 100);
 
     const collection = await prisma.collection.findUnique({
       where: { id },
@@ -67,7 +73,7 @@ router.get('/:id', optionalAuth, async (req, res) => {
     }
 
     // Get collection items
-    const skip = (Number(page) - 1) * Number(limit);
+    const skip = (page - 1) * limit;
     const [items, total] = await Promise.all([
       prisma.collectionItem.findMany({
         where: { collectionId: id },
@@ -90,7 +96,7 @@ router.get('/:id', optionalAuth, async (req, res) => {
         },
         orderBy: { addedAt: 'desc' },
         skip,
-        take: Number(limit)
+        take: limit
       }),
       prisma.collectionItem.count({ where: { collectionId: id } })
     ]);
@@ -99,10 +105,10 @@ router.get('/:id', optionalAuth, async (req, res) => {
       collection,
       items: items.map(item => item.wallpaper),
       pagination: {
-        page: Number(page),
-        limit: Number(limit),
+        page,
+        limit,
         total,
-        totalPages: Math.ceil(total / Number(limit))
+        totalPages: Math.ceil(total / limit)
       }
     });
   } catch (error) {
