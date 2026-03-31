@@ -7,6 +7,7 @@ import { SettingsMenu } from "./SettingsMenu";
 import DownloadComp from "./DownloadComp";
 import RandomComp from "./RandomComp";
 import styled from "@emotion/styled";
+import { LinearProgress, Box, Typography } from "@mui/material";
 
 const CanvasWrapper = styled.div`
   flex: 1;
@@ -25,6 +26,19 @@ const TopRight = styled.div`
   gap: 8px;
 `;
 
+const ProgressOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.85);
+  z-index: 200;
+`;
+
 const initialState = {
   version: 1, //0
   lineNumber: 60, //1
@@ -40,7 +54,9 @@ const initialState = {
   randomColor: false, //11
   displayColorPicker: false, //12
   color: { r: 0, g: 0, b: 0 }, //13
-  invcolor: { r: 255, g: 255, b: 255 } //14
+  invcolor: { r: 255, g: 255, b: 255 }, //14
+  rendering: false,
+  progress: 0
 };
 
 export type CircleState = Readonly<typeof initialState>;
@@ -283,8 +299,14 @@ export class CircleCanvas extends Component<CircleCanvasProps, CircleState> {
     }
   };
 
-  redraw = () => {
+  private yieldToUI = (): Promise<void> => {
+    return new Promise(resolve => requestAnimationFrame(() => resolve()));
+  };
+
+  redraw = async () => {
     this.setState({
+      rendering: true,
+      progress: 0,
       invcolor: {
         r: 255 - this.state.color.r,
         g: 255 - this.state.color.g,
@@ -297,10 +319,10 @@ export class CircleCanvas extends Component<CircleCanvasProps, CircleState> {
         this.pixeldata = new Float32Array(this.roundedpixeldata.length);
       }
     }
-    //window.location.hash = encodeURI(JSON.stringify(Object.values(this.state)));
-    this.drawCurveMurder();
-    console.log(this.state);
+    await this.yieldToUI();
+    await this.drawCurveMurder();
     this.commitImage();
+    this.setState({ rendering: false, progress: 100 });
   };
 
   /**
@@ -308,10 +330,12 @@ export class CircleCanvas extends Component<CircleCanvasProps, CircleState> {
    * points moved around randomly a bit
    *
    */
-  drawCurveMurder = () => {
+  drawCurveMurder = async () => {
+    const totalIterations = 60;
+    const updateInterval = Math.max(1, Math.floor(totalIterations / 10));
     let fwl = new FuzzyWobbleCircle(this.state.width, this.state, 300);
 
-    for (var i = 0; i < 60; i++) {
+    for (var i = 0; i < totalIterations; i++) {
       this.drawSpreadCurve(fwl, i);
       if (this.state.randomColor) {
         this.setState({
@@ -330,6 +354,12 @@ export class CircleCanvas extends Component<CircleCanvasProps, CircleState> {
         });
       }
       fwl.next();
+
+      if ((i + 1) % updateInterval === 0) {
+        const progress = Math.round(((i + 1) / totalIterations) * 100);
+        this.setState({ progress });
+        await this.yieldToUI();
+      }
     }
   };
 
@@ -353,9 +383,20 @@ export class CircleCanvas extends Component<CircleCanvasProps, CircleState> {
   };
 
   render = () => {
+    const { rendering, progress } = this.state;
     return (
       <CanvasWrapper>
         <canvas id="circlecanvas" ref={this.canvas}></canvas>
+        {rendering && (
+          <ProgressOverlay>
+            <Box sx={{ width: '300px', textAlign: 'center' }}>
+              <Typography variant="body2" sx={{ mb: 1 }}>
+                Rendering... {progress}%
+              </Typography>
+              <LinearProgress variant="determinate" value={progress} />
+            </Box>
+          </ProgressOverlay>
+        )}
         <TopRight>
           <RandomComp stateCallback={this.setSettingAndRender} />
           <DownloadComp
