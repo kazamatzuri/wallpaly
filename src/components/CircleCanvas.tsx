@@ -8,6 +8,13 @@ import DownloadComp from "./DownloadComp";
 import RandomComp from "./RandomComp";
 import styled from "@emotion/styled";
 
+const CanvasWrapper = styled.div`
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+`;
+
 const TopRight = styled.div`
   display: flex;
   position: absolute;
@@ -15,8 +22,7 @@ const TopRight = styled.div`
   right: 16px;
   font-size: 18px;
   z-index: 100;
-  width: 100px;
-  justify-content: space-around;
+  gap: 8px;
 `;
 
 const initialState = {
@@ -348,7 +354,7 @@ export class CircleCanvas extends Component<CircleCanvasProps, CircleState> {
 
   render = () => {
     return (
-      <div>
+      <CanvasWrapper>
         <canvas id="circlecanvas" ref={this.canvas}></canvas>
         <TopRight>
           <RandomComp stateCallback={this.setSettingAndRender} />
@@ -363,7 +369,7 @@ export class CircleCanvas extends Component<CircleCanvasProps, CircleState> {
             pRedraw={this.redraw}
           />
         </TopRight>
-      </div>
+      </CanvasWrapper>
     );
   };
 }
